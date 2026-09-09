@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auditoría de la Home — Kingpin MAX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@500;700;800;900&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F5F6F3; --surface:#FFFFFF; --ink:#14171C; --steel:#57616B; --line:#DDE0DD;
+    --accent:#1F5C6E; --accent-soft:#E4EEF0; --accent-ink:#123642;
+    --critical:#B23A2E; --critical-soft:#F7E7E4;
+    --high:#B5762A; --high-soft:#F6ECDC;
+    --medium:#8A7A2E; --medium-soft:#F2EFDA;
+    --good:#3F7A5C; --good-soft:#E4F0EA;
+    --shadow: 0 1px 2px rgba(20,23,28,0.06), 0 8px 24px -12px rgba(20,23,28,0.18);
+    --font-display:'Libre Franklin', 'Arial Narrow', sans-serif;
+    --font-body:'Public Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-mono:'IBM Plex Mono', "Courier New", monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#14171A; --surface:#1B1F23; --ink:#EDEFEC; --steel:#9BA3A9; --line:#2B3034;
+      --accent:#6FB8CC; --accent-soft:#1E3338; --accent-ink:#D7EFF4;
+      --critical:#E4776A; --critical-soft:#3A2220;
+      --high:#E0A855; --high-soft:#372B18;
+      --medium:#C9B65C; --medium-soft:#332F17;
+      --good:#6FBE95; --good-soft:#1B2E24;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#14171A; --surface:#1B1F23; --ink:#EDEFEC; --steel:#9BA3A9; --line:#2B3034;
+    --accent:#6FB8CC; --accent-soft:#1E3338; --accent-ink:#D7EFF4;
+    --critical:#E4776A; --critical-soft:#3A2220;
+    --high:#E0A855; --high-soft:#372B18;
+    --medium:#C9B65C; --medium-soft:#332F17;
+    --good:#6FBE95; --good-soft:#1B2E24;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--font-body); font-size:16px; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{font-family:var(--font-display); margin:0; text-wrap:balance; color:var(--ink);}
+  p{margin:0;}
+  a{color:var(--accent);}
+  img{max-width:100%;}
+  .mono{font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+
+  .shell{display:grid; grid-template-columns:1fr; max-width:1180px; margin:0 auto; padding:0 24px;}
+  @media(min-width:960px){ .shell{grid-template-columns:240px 1fr; gap:56px; padding:0 40px;} }
+
+  .toc{display:none;}
+  @media(min-width:960px){
+    .toc{
+      display:block; position:sticky; top:32px; align-self:start;
+      padding-top:64px; max-height:calc(100vh - 64px); overflow-y:auto;
+    }
+  }
+  .toc-label{font-family:var(--font-mono); font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--steel); margin-bottom:14px; display:block;}
+  .toc nav{display:flex; flex-direction:column; gap:2px;}
+  .toc a{
+    display:block; text-decoration:none; color:var(--steel); font-size:13.5px; font-weight:500;
+    padding:7px 10px; border-radius:5px; border-left:2px solid transparent;
+  }
+  .toc a:hover{color:var(--ink); background:var(--surface);}
+  .toc a.active{color:var(--accent-ink); border-left-color:var(--accent); background:var(--accent-soft); font-weight:600;}
+  .toc .toc-general{margin-top:10px; padding-top:10px; border-top:1px solid var(--line);}
+
+  .masthead{padding:64px 0 40px; border-bottom:1px solid var(--line);}
+  .masthead-ref{font-family:var(--font-mono); font-size:12px; letter-spacing:0.06em; color:var(--steel); text-transform:uppercase; display:flex; gap:18px; flex-wrap:wrap; margin-bottom:20px;}
+  .masthead-ref span strong{color:var(--ink); font-weight:600;}
+  .masthead h1{font-size:clamp(30px,4.4vw,46px); font-weight:800; line-height:1.05; letter-spacing:-0.01em;}
+  .masthead .dek{margin-top:16px; font-size:17px; color:var(--steel); max-width:66ch; line-height:1.6;}
+  .masthead .dek + .dek{margin-top:10px;}
+  .scope-grid{display:grid; grid-template-columns:1fr; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:8px; margin-top:32px; overflow:hidden;}
+  @media(min-width:640px){ .scope-grid{grid-template-columns:repeat(4,1fr);} }
+  .scope-cell{background:var(--surface); padding:16px 18px;}
+  .scope-cell .num{font-family:var(--font-mono); font-size:24px; font-weight:600; color:var(--ink);}
+  .scope-cell .cap{font-size:12px; color:var(--steel); margin-top:4px;}
+
+  section{padding:48px 0;}
+  section#general{padding-top:56px;}
+  .section-head{margin-bottom:28px;}
+  .section-eyebrow{font-family:var(--font-mono); font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:var(--accent); display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .section-eyebrow::before{content:""; width:20px; height:2px; background:var(--accent); display:inline-block;}
+  #general .section-eyebrow{color:var(--medium);}
+  #general .section-eyebrow::before{background:var(--medium);}
+  .section-head h2{font-size:clamp(22px,3vw,30px); font-weight:800;}
+  .section-head .desc{margin-top:10px; color:var(--steel); font-size:15px; max-width:70ch;}
+  .section-head .path{margin-top:6px; display:inline-block; font-family:var(--font-mono); font-size:11.5px; color:var(--steel); background:var(--surface); border:1px solid var(--line); padding:3px 8px; border-radius:4px;}
+
+  .chip{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:var(--font-mono); font-size:10.5px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase;
+    padding:4px 9px 4px 8px; border-radius:4px; border-left:3px solid; color:var(--ink);
+  }
+  .chip.sev-critical{background:var(--critical-soft); border-color:var(--critical);}
+  .chip.sev-high{background:var(--high-soft); border-color:var(--high);}
+  .chip.sev-medium{background:var(--medium-soft); border-color:var(--medium);}
+  .chip.sev-good{background:var(--good-soft); border-color:var(--good);}
+  .tag{font-family:var(--font-mono); font-size:11px; color:var(--steel); background:var(--paper); border:1px solid var(--line); padding:3px 8px; border-radius:4px;}
+
+  .finding{
+    background:var(--surface); border:1px solid var(--line); border-radius:8px;
+    padding:22px 24px; margin-bottom:16px; box-shadow:var(--shadow);
+  }
+  .finding-head{display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap;}
+  .finding-head h3{font-size:16px; font-weight:700; max-width:60ch;}
+  .finding-refs{margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;}
+  .finding p{margin-top:12px; font-size:14.5px; color:var(--steel); line-height:1.65; max-width:74ch;}
+  .finding p strong{color:var(--ink); font-weight:600;}
+  .finding .rec{
+    margin-top:14px; padding:12px 14px; background:var(--accent-soft); border-radius:6px;
+    font-size:14px; color:var(--accent-ink); line-height:1.55;
+  }
+  .finding .rec strong{font-family:var(--font-mono); font-size:11px; letter-spacing:0.05em; text-transform:uppercase; display:block; margin-bottom:4px; color:var(--accent-ink);}
+
+  .strength-list{display:flex; flex-direction:column; gap:10px; margin-bottom:16px;}
+  .strength{
+    display:flex; gap:12px; align-items:flex-start; background:var(--surface); border:1px solid var(--line);
+    border-left:3px solid var(--good); border-radius:6px; padding:14px 16px;
+  }
+  .strength svg{flex:none; margin-top:2px; color:var(--good);}
+  .strength p{font-size:14.5px; color:var(--steel); line-height:1.55;}
+  .strength p strong{color:var(--ink);}
+
+  .retired{
+    display:flex; gap:12px; align-items:flex-start; background:var(--surface); border:1px solid var(--line);
+    border-left:3px solid var(--steel); border-radius:6px; padding:14px 16px; margin-bottom:16px;
+  }
+  .retired svg{flex:none; margin-top:2px; color:var(--steel);}
+  .retired p{font-size:14.5px; color:var(--steel); line-height:1.55;}
+  .retired p strong{color:var(--ink);}
+
+  .no-finding{font-size:14px; color:var(--steel); font-style:italic; padding:4px 0 8px;}
+
+  footer.report-foot{padding:48px 0 80px; border-top:1px solid var(--line); margin-top:24px;}
+  footer.report-foot p{font-size:13px; color:var(--steel); max-width:60ch; line-height:1.6;}
+  footer.report-foot p + p{margin-top:8px;}
+
+  @media(prefers-reduced-motion: reduce){ *{scroll-behavior:auto !important;} }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <aside class="toc">
+    <span class="toc-label">Secciones de la Home</span>
+    <nav id="tocNav">
+      <a href="#header">01 — Header / Navegación</a>
+      <a href="#hero">02 — Hero</a>
+      <a href="#kit">03 — Kit Completo / Why It Matters</a>
+      <a href="#coverage">04 — Cobertura</a>
+      <a href="#quotes">05 — Testimonios</a>
+      <a href="#partner">07 — Partner With Us</a>
+      <a href="#cta">08 — CTA Final</a>
+      <a href="#footer">09 — Footer</a>
+      <a href="#general" class="toc-general">General</a>
+    </nav>
+  </aside>
+
+  <div>
+    <header class="masthead">
+      <div class="masthead-ref">
+        <span>INFORME <strong class="mono">KM-HOME-AUDIT-01</strong></span>
+        <span>FECHA <strong class="mono">2026-09-03</strong></span>
+        <span>ALCANCE <strong>Home únicamente (index.html), por sección</strong></span>
+      </div>
+      <h1>Kingpin MAX — Auditoría de la Home</h1>
+      <p class="dek">Reorganizada respecto al informe anterior: acá cada sección de <span class="mono">index.html</span> tiene su propio bloque, en el mismo orden en que aparecen en la página — así cualquier hallazgo se ubica de inmediato en el código. Lo que aplica a más de una sección a la vez (color, contraste, motion) se agrupó al final en <strong>General</strong> en vez de repetirse.</p>
+      <p class="dek">Nota de proceso: la ronda anterior de esta misma auditoría había marcado el sistema de íconos como un problema de coherencia. Al abrir los PNG reales para este informe, resultó ser un hallazgo incorrecto — ya está resuelto y documentado en <span class="mono">KM-AUDIT-01</span>. Queda retirado abajo, no oculto.</p>
+      <div class="scope-grid">
+        <div class="scope-cell"><div class="num mono">8</div><div class="cap">Secciones de la Home revisadas</div></div>
+        <div class="scope-cell"><div class="num mono">8</div><div class="cap">Hallazgos abiertos</div></div>
+        <div class="scope-cell"><div class="num mono">3</div><div class="cap">Resueltos en esta pasada</div></div>
+        <div class="scope-cell"><div class="num mono">1</div><div class="cap">Hallazgo retirado tras verificar</div></div>
+      </div>
+    </header>
+
+    <section id="header">
+      <div class="section-head">
+        <span class="section-eyebrow">01</span>
+        <h2>Header / Navegación</h2>
+        <span class="path">#seccion-1-nav</span>
+      </div>
+
+      <div class="finding">
+        <div class="finding-head"><h3>Debajo de 900px, el header se queda sin ninguna acción visible</h3></div>
+        <div class="finding-refs"><span class="tag">.nav-right .btn</span><span class="tag">css/style.css:111</span><span class="tag">css/style.css:115</span></div>
+        <p><span class="mono">.nav-right .btn{display:none;}</span> solo se revierte a <span class="mono">inline-flex</span> a partir de 900px. El menú móvil (<span class="mono">.nav-links.is-open</span>) abre y muestra los links de navegación, pero el botón "Get Your Kit" no vive dentro de ese panel — es un hermano de <span class="mono">.nav-toggle</span> dentro de <span class="mono">.nav-right</span>, así que en ningún punto por debajo de 900px hay un botón de acción visible en el header, ni cerrado ni con el menú abierto. En un sitio que probablemente recibe visitas desde el celular en el camión, el header pierde su CTA persistente justo en ese tamaño.</p>
+        <div class="rec"><strong>Recomendación</strong>Sumar el botón dentro de <span class="mono">.nav-links.is-open</span> cuando el menú está abierto, o dejarlo siempre visible junto al toggle en vez de ocultarlo por completo bajo 900px.</div>
+      </div>
+    </section>
+
+    <section id="hero">
+      <div class="section-head">
+        <span class="section-eyebrow">02</span>
+        <h2>Hero</h2>
+        <span class="path">#seccion-2-hero</span>
+      </div>
+
+      <div class="strength-list">
+        <div class="strength">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <p><strong>El abanico de stickers 40'/41'/43' sigue siendo el elemento más fuerte de la página.</strong> Es una idea de diseño que muestra el producto en vez de describirlo, con <span class="mono">alt</span> text específico por sticker (no genérico) y un hover que invita a explorarlo sin exagerar el movimiento.</p>
+        </div>
+      </div>
+
+      <div class="no-finding">Sin hallazgos nuevos locales a esta sección — el contraste del eyebrow on-dark que aparece acá se documenta una sola vez en General, ya que se repite en otras dos secciones.</div>
+    </section>
+
+    <section id="kit">
+      <div class="section-head">
+        <span class="section-eyebrow">03</span>
+        <h2>Kit Completo — Why It Matters</h2>
+        <span class="path">#seccion-3-kit-completo</span>
+      </div>
+
+      <div class="strength">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        <p><strong>Resuelto — el título de la sección y la lista ya comparten borde izquierdo.</strong> <span class="mono">.why-matters</span> tenía <span class="mono">margin:0 auto</span>, lo que la centraba de forma independiente al <span class="mono">.section-head</span> de arriba. Se quitó ese <span class="mono">margin:0 auto</span> en <span class="mono">css/style.css:183</span> y se reverificó en el DOM: ambos bloques arrancan ahora exactamente en x=66.5px a 1280px de viewport.</p>
+      </div>
+
+      <div class="strength">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        <p><strong>Resuelto — el cambio de registro entre la fila 2 y la 3 ya está marcado.</strong> Se sumó un divisor mono en minúscula ("Built In") entre "Large Fleets" y "High-Vis Vinyl", con espaciado extra en vez de una línea (para no reintroducir las líneas divisorias que ya se habían sacado de esta lista). Verificado por geometría: el hueco entre esas dos filas específicas queda de ~30px más aire que entre cualquier otro par de filas de la lista.</p>
+      </div>
+    </section>
+
+    <section id="coverage">
+      <div class="section-head">
+        <span class="section-eyebrow">04</span>
+        <h2>Cobertura</h2>
+        <span class="path">#seccion-4-cobertura</span>
+      </div>
+
+      <div class="strength">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        <p><strong>Resuelto — el texto ya arranca en el mismo borde que el resto de la Home.</strong> <span class="mono">#seccion-4-cobertura .container</span> tenía <span class="mono">padding-left/right:60px</span> en vez de los 24px estándar de <span class="mono">.container</span> — un desfase de 36px medido en el DOM (x=102.5px acá contra x=66.5px en Hero, Kit Completo y Testimonios a 1280px de viewport). Se sacó ese override en <span class="mono">css/style.css:456</span> y se reverificó: las 4 secciones comparten ahora el mismo borde izquierdo.</p>
+      </div>
+
+      <div class="finding">
+        <div class="finding-head"><h3>Es el banner de foto + gradiente más genérico de la página</h3></div>
+        <div class="finding-refs"><span class="tag">index.html:136-145</span><span class="tag">css/style.css:444-464</span></div>
+        <p>Foto de carretera, scrim oscuro, texto blanco anclado abajo-izquierda — el patrón por default de cualquier generador de páginas. El contenido real de la sección (un mismo mark en imperial y métrico, 41' / 12.5 m) ya tiene una forma gráfica propia: el tratamiento mono/tabular que el hero usa para "41' federal standard". Acá esa idea se queda solo en el texto de la <span class="mono">&lt;p&gt;</span>.</p>
+        <div class="rec"><strong>Recomendación</strong>Sacar un elemento gráfico chico sobre la foto — el mark "41' · 12.5 M" en el mismo mono tabular del hero — para que la sección demuestre la idea de "un mismo mark, dos unidades" en vez de solo describirla en prosa.</div>
+      </div>
+    </section>
+
+    <section id="quotes">
+      <div class="section-head">
+        <span class="section-eyebrow">05</span>
+        <h2>Testimonios</h2>
+        <span class="path">#seccion-5-confianza</span>
+      </div>
+
+      <div class="strength-list">
+        <div class="strength">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <p><strong>Las 3 quote cards usan el sistema de card compartido correctamente.</strong> <span class="mono">.card-light.card-accent</span>, mismo radio y mismo mecanismo de acento que el resto del sitio — nada propio inventado para esta sección.</p>
+        </div>
+      </div>
+      <div class="no-finding">Sin hallazgos nuevos locales — es la única sección de la Home con scroll-reveal (<span class="mono">.grid-quotes</span> en <span class="mono">js/animations.js</span>); ese patrón se evalúa en General.</div>
+    </section>
+
+    <section id="partner">
+      <div class="section-head">
+        <span class="section-eyebrow">07</span>
+        <h2>Partner With Us</h2>
+        <span class="path">Sección eliminada — antes #seccion-7-partner</span>
+      </div>
+      <div class="retired">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 12h6"/></svg>
+        <p><strong>Sección eliminada de la Home por decisión del cliente.</strong> El banner "Partner With Us" (imagen + copy + botón "Get In Touch") se sacó por completo de <span class="mono">index.html</span>, junto con su CSS (<span class="mono">.partner-banner*</span>) en <span class="mono">css/style.css</span>. Era el único enlace en todo el sitio hacia <span class="mono">become-a-distributor.html</span> — decisión explícita: esa página queda huérfana a propósito, no enlazada desde ningún lugar, en vez de sumarle un link al footer.</p>
+      </div>
+    </section>
+
+    <section id="cta">
+      <div class="section-head">
+        <span class="section-eyebrow">08</span>
+        <h2>CTA Final</h2>
+        <span class="path">#seccion-8-cta-shop</span>
+      </div>
+
+      <div class="finding">
+        <div class="finding-head"><h3>Es la única sección de la Home resuelta a puro <span class="mono">style=""</span> inline</h3></div>
+        <div class="finding-refs"><span class="tag">index.html:181-190</span></div>
+        <p>5 atributos <span class="mono">style</span> inline en 5 elementos distintos ( <span class="mono">section</span>, <span class="mono">.container</span>, <span class="mono">h2</span>, <span class="mono">p</span>, <span class="mono">.hero-actions</span> ) — cada otra sección de la Home resuelve su tipografía y espaciado con clases en <span class="mono">css/style.css</span>. De paso, el <span class="mono">padding:80px 0</span> inline rompe el ritmo responsive que define <span class="mono">section{padding:96px/132px}</span> para todo el resto del sitio: esta sección queda con menos aire en desktop que sus vecinas, sin que se note a simple vista por qué.</p>
+        <div class="rec"><strong>Recomendación</strong>Mover estos 5 valores a una clase propia (o extender <span class="mono">.order-section</span>) que herede el <span class="mono">padding</span> responsive del resto de las secciones en vez de fijarlo en 80px parejo.</div>
+      </div>
+    </section>
+
+    <section id="footer">
+      <div class="section-head">
+        <span class="section-eyebrow">09</span>
+        <h2>Footer</h2>
+        <span class="path">#seccion-9-footer</span>
+      </div>
+
+      <div class="finding">
+        <div class="finding-head"><h3>Los 3 íconos sociales no llevan a ningún lado</h3></div>
+        <div class="finding-refs"><span class="tag">index.html:201-203</span></div>
+        <p>LinkedIn, X y Facebook en <span class="mono">.foot-social</span> apuntan los tres a <span class="mono">href="#"</span>. En un sitio que vende cumplimiento y confianza operativa, un ícono social que no lleva a ninguna cuenta real manda la señal contraria a la que busca el resto de la página.</p>
+        <div class="rec"><strong>Recomendación</strong>Enlazar las cuentas reales en cuanto existan, o sacar los 3 íconos del footer hasta ese momento — un footer sin sección social se nota menos que uno con links muertos.</div>
+      </div>
+    </section>
+
+    <section id="general">
+      <div class="section-head">
+        <span class="section-eyebrow">General</span>
+        <h2>Recomendaciones transversales</h2>
+        <p class="desc">Lo que no pertenece a una sola sección — aparece repetido a lo largo de toda la Home, así que corregirlo una vez arregla varios lugares a la vez.</p>
+      </div>
+
+      <div class="finding">
+        <div class="finding-head"><h3>Los eyebrows en rojo sobre fondo oscuro no llegan a 4.5:1</h3></div>
+        <div class="finding-refs"><span class="tag">--red: #E62B27 sobre --ink: #111111</span><span class="tag">index.html:54</span><span class="tag">index.html:183</span></div>
+        <p>Calculado con la fórmula de luminancia relativa de WCAG: <span class="mono">--red</span> sobre <span class="mono">--ink</span> da <strong>4.26:1</strong> — por debajo del mínimo AA de 4.5:1 para texto normal (el eyebrow es mono 12px en negrita, que no llega al umbral de "texto grande" de WCAG). Con Partner With Us eliminada, quedan 2 lugares en vez de 3: el eyebrow del hero y el del CTA final ("Get Your Kit"). Dato relevante: en la sección de Cobertura (<span class="mono">index.html:140</span>) alguien ya lo resolvió a mano con <span class="mono">style="color:#ffffff"</span> inline — evidencia de que el problema ya se sintió antes, pero se parchó en un solo lugar en vez de sistemáticamente.</p>
+        <div class="rec"><strong>Recomendación</strong>Definir un <span class="mono">--red-light</span> (ej. <span class="mono">#FF4A45</span>) solo para texto sobre <span class="mono">--ink</span>, o mover esos 2 eyebrows a blanco como ya se hizo en Cobertura — pero como clase real (<span class="mono">.eyebrow.on-dark-alt</span>), no como <span class="mono">style</span> inline repetido.</div>
+      </div>
+
+      <div class="finding">
+        <div class="finding-head"><h3>El mismo rojo marca "acá hay un label" y "hacé clic acá"</h3></div>
+        <div class="finding-refs"><span class="tag">.eyebrow</span><span class="tag">.btn-primary</span><span class="tag">.card-accent</span><span class="tag">.hl</span></div>
+        <p>Contando solo la Home: 4 eyebrows en rojo (de 5 en total — Cobertura ya está en blanco), 3 botones primarios en rojo, la palabra "ticket" resaltada en rojo dentro del H1, y 3 barras de acento rojo en las quote cards. Cuando el mismo color marca tanto una etiqueta de sección como una acción, el ojo deja de leer el rojo como señal de "hacé clic" — es la misma señal repetida en contextos distintos.</p>
+        <div class="rec"><strong>Recomendación</strong>Reservar <span class="mono">--red</span> saturado casi exclusivamente para CTAs y el highlight del H1; los eyebrows pueden vivir en <span class="mono">--ink</span>/<span class="mono">--steel</span> con solo el trazo del <span class="mono">::before</span> en rojo, en vez del texto completo.</div>
+      </div>
+
+      <div class="finding">
+        <div class="finding-head"><h3>Un solo momento de scroll-reveal en toda la página</h3></div>
+        <div class="finding-refs"><span class="tag">js/animations.js:15-21</span></div>
+        <p><span class="mono">animations.js</span> solo anima <span class="mono">.grid-quotes</span> con fade + stagger al hacer scroll. El resto de la Home — la lista de <span class="mono">.why-row</span>, Cobertura, el CTA final — no tiene ninguna entrada. Un único scroll-reveal a mitad de página se lee como remanente de una versión anterior del sitio, no como una elección de "acá sí, acá no" a propósito.</p>
+        <div class="rec"><strong>Recomendación</strong>O se extiende el mismo patrón de fade+stagger a <span class="mono">.why-row</span> (ahora que es una lista real, le queda bien), o se saca también de <span class="mono">.grid-quotes</span> y el único momento de motion de la página queda siendo el hover del sticker-fan del hero.</div>
+      </div>
+
+      <div class="finding">
+        <div class="finding-head"><h3>El salto de numeración ahora es de dos secciones, no una</h3></div>
+        <div class="finding-refs"><span class="tag">index.html</span><span class="tag">antes: KM-AUDIT-01, prioridad 07</span></div>
+        <p>Los comentarios HTML de la Home iban de <span class="mono">&lt;!-- SECCIÓN 5 --&gt;</span> a <span class="mono">&lt;!-- SECCIÓN 7 --&gt;</span> (hueco en la 6, ya trackeado en el informe de sitio completo). Con la Sección 7 (Partner With Us) eliminada por decisión del cliente, ahora el salto es de <span class="mono">SECCIÓN 5</span> directo a <span class="mono">SECCIÓN 8</span> — dos números ausentes en vez de uno.</p>
+        <div class="rec"><strong>Recomendación</strong>Renumerar los comentarios restantes (5→6, 8→7, 9→8) para que la secuencia vuelva a ser consecutiva, ya que la Sección 7 no va a volver a construirse. La Sección 6 (FAQ) sigue abierta para cuando ese contenido esté listo.</div>
+      </div>
+
+      <div class="retired">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        <p><strong>Hallazgo retirado — sistema de íconos.</strong> La pasada anterior de esta auditoría había marcado los íconos de <span class="mono">hero-meta</span> y <span class="mono">why-matters</span> (binocular, tropper_dot, delivery-truck, etc.) como un pack genérico de línea fina que no combinaba con la identidad. Al abrir los PNG reales, son ilustraciones con degradado gris dibujadas a medida — ya documentado como resuelto en <span class="mono">KM-AUDIT-01</span>, prioridad 05. El error fue mío, por juzgar por un screenshot achicado en vez de por el archivo real.</p>
+      </div>
+
+      <div class="strength-list">
+        <div class="strength">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <p><strong>La tipografía sigue leyéndose deliberada en las 8 secciones.</strong> Archivo Black para titulares, Barlow para cuerpo, JetBrains Mono para números y labels técnicos — sin excepciones sueltas dentro de la Home.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="report-foot">
+      <p>Alcance de este informe: solo <span class="mono">index.html</span> y las reglas de <span class="mono">css/style.css</span>/<span class="mono">js/animations.js</span> que tocan sus secciones. Para el resto de las 12 páginas del sitio, ver <span class="mono">kingpin-max-site-audit.html</span> (KM-AUDIT-01).</p>
+      <p>Avisame cuando quieras que aplique alguno de estos cambios directamente en el código.</p>
+    </footer>
+  </div>
+</div>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('#tocNav a'));
+  var sections = links.map(function(a){ return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
+  function onScroll(){
+    var y = window.scrollY + 120;
+    var current = sections[0];
+    sections.forEach(function(sec){ if (sec.offsetTop <= y) current = sec; });
+    links.forEach(function(a){
+      a.classList.toggle('active', current && a.getAttribute('href') === '#' + current.id);
+    });
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mockup — Sección 3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  body{background:#dcdcda;}
+  .mockup-label{
+    font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+    color:#fff;background:#1a1a1a;padding:14px 24px;
+  }
+  .mockup-label span{color:rgba(255,255,255,0.5);font-weight:500;margin-left:10px;}
+
+  /* ---- Opción B: sección completa a negro ---- */
+  .kit-dark{background:var(--ink);}
+  .kit-dark .eyebrow{color:var(--red);}
+  .kit-dark .section-head h2{color:#fff;}
+  .kit-dark .why-label{color:#fff;}
+  .kit-dark .why-row p{color:rgba(255,255,255,0.72);}
+  .kit-dark .why-divider{color:rgba(255,255,255,0.45);}
+
+  /* ---- Opción A: fondo claro + chip oscuro detrás del ícono ---- */
+  .icon-chip{
+    flex:none;width:56px;height:56px;border-radius:50%;
+    background:var(--ink);display:flex;align-items:center;justify-content:center;
+  }
+  .icon-chip img{width:32px;height:32px;}
+</style>
+</head>
+<body>
+
+<div class="mockup-label">OPCIÓN A <span>fondo claro sin cambios + chip oscuro detrás de cada ícono</span></div>
+<section class="kit-section" style="padding:72px 0;">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Why It Matters</span>
+      <h2>Ready before anyone has to ask.</h2>
+    </div>
+    <div class="why-matters">
+      <div class="why-row">
+        <div class="icon-chip"><img src="icons/tropper_dot.fw.png" alt=""></div>
+        <div>
+          <p class="why-label">DOT Inspection</p>
+          <p>Shows up ready for a DOT inspection &mdash; not improvised.</p>
+        </div>
+      </div>
+      <div class="why-row">
+        <div class="icon-chip"><img src="icons/delivery-truck.png" alt=""></div>
+        <div>
+          <p class="why-label">Large Fleets</p>
+          <p>Built for large fleets and trailer rental companies &mdash; in drop and hook operations, compliance stays on the trailer, no matter who's hooking up next.</p>
+        </div>
+      </div>
+      <div class="why-divider"><span>Built In</span></div>
+      <div class="why-row">
+        <div class="icon-chip"><img src="icons/binocular.png" alt=""></div>
+        <div>
+          <p class="why-label">High-Vis Vinyl</p>
+          <p>Bold, high-contrast vinyl designed for maximum visibility and long-lasting readability throughout the life of the trailer.</p>
+        </div>
+      </div>
+      <div class="why-row">
+        <div class="icon-chip"><img src="icons/jigsaw.png" alt=""></div>
+        <div>
+          <p class="why-label">48&prime; / 53&prime; Wall-Mount Fit</p>
+          <p>Precision-fit for 48&prime; and 53&prime; trailers, mounting flush against the wall for a clean, secure, low-profile installation.</p>
+        </div>
+      </div>
+      <div class="why-row">
+        <div class="icon-chip"><img src="icons/flash.png" alt=""></div>
+        <div>
+          <p class="why-label">Quick Install Kit</p>
+          <p>Everything needed for a fast, straightforward installation &mdash; no specialized tools or extensive setup time required.</p>
+        </div>
+      </div>
+      <div class="why-row">
+        <div class="icon-chip"><img src="icons/document.png" alt=""></div>
+        <div>
+          <p class="why-label">KPRA / KCRT Compliant</p>
+          <p>Marker placement precisely reflects KPRA and KCRT measurements, helping fleets stay within state-mandated kingpin-to-axle distance limits.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="mockup-label">OPCIÓN B <span>toda la sección a fondo negro (--ink), íconos e texto reescalados a blanco</span></div>
+<section class="kit-section kit-dark" style="padding:72px 0;">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Why It Matters</span>
+      <h2>Ready before anyone has to ask.</h2>
+    </div>
+    <div class="why-matters">
+      <div class="why-row">
+        <img class="why-icon" src="icons/tropper_dot.fw.png" alt="" width="40" height="40">
+        <div>
+          <p class="why-label">DOT Inspection</p>
+          <p>Shows up ready for a DOT inspection &mdash; not improvised.</p>
+        </div>
+      </div>
+      <div class="why-row">
+        <img class="why-icon" src="icons/delivery-truck.png" alt="" width="40" height="40">
+        <div>
+          <p class="why-label">Large Fleets</p>
+          <p>Built for large fleets and trailer rental companies &mdash; in drop and hook operations, compliance stays on the trailer, no matter who's hooking up next.</p>
+        </div>
+      </div>
+      <div class="why-divider"><span>Built In</span></div>
+      <div class="why-row">
+        <img class="why-icon" src="icons/binocular.png" alt="" width="40" height="40">
+        <div>
+          <p class="why-label">High-Vis Vinyl</p>
+          <p>Bold, high-contrast vinyl designed for maximum visibility and long-lasting readability throughout the life of the trailer.</p>
+        </div>
+      </div>
+      <div class="why-row">
+        <img class="why-icon" src="icons/jigsaw.png" alt="" width="40" height="40">
+        <div>
+          <p class="why-label">48&prime; / 53&prime; Wall-Mount Fit</p>
+          <p>Precision-fit for 48&prime; and 53&prime; trailers, mounting flush against the wall for a clean, secure, low-profile installation.</p>
+        </div>
+      </div>
+      <div class="why-row">
+        <img class="why-icon" src="icons/flash.png" alt="" width="40" height="40">
+        <div>
+          <p class="why-label">Quick Install Kit</p>
+          <p>Everything needed for a fast, straightforward installation &mdash; no specialized tools or extensive setup time required.</p>
+        </div>
+      </div>
+      <div class="why-row">
+        <img class="why-icon" src="icons/document.png" alt="" width="40" height="40">
+        <div>
+          <p class="why-label">KPRA / KCRT Compliant</p>
+          <p>Marker placement precisely reflects KPRA and KCRT measurements, helping fleets stay within state-mandated kingpin-to-axle distance limits.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="mockup-label">CONTEXTO <span>así quedan Hero y Cobertura arriba/abajo, para ver si Opción B se funde con ellas</span></div>
+<section class="hero" style="padding:56px 0;">
+  <div class="hero-photo" aria-hidden="true"></div>
+  <div class="container" style="position:relative;z-index:1;">
+    <span class="eyebrow on-dark">KPRA / KCRT COMPLIANT &mdash; 53' TRAILERS</span>
+    <h1 style="margin-top:16px;font-size:36px;">Keep your fleet <span class="hl">legal</span>.</h1>
+  </div>
+</section>
+<div style="height:6px;background:#dcdcda;"></div>
+<section id="seccion-4-cobertura" style="min-height:220px;">
+  <div class="coverage-bg" aria-hidden="true"></div>
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow on-dark" style="color:#ffffff;">One Route, Not Three Markets</span>
+      <h2>Built for How Freight <span class="accent">Actually Moves.</span></h2>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

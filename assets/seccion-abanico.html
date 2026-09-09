@@ -1,0 +1,124 @@
+<!--
+  SECCIÓN: Abanico de stickers (hero / portada)
+  ------------------------------------------------
+  Cómo usar:
+  1. Copia la carpeta "images/" dentro de tu carpeta de imágenes del sitio
+     (ajusta las rutas src="images/..." si tu proyecto las guarda en otro lugar).
+  2. Pega el <section> de abajo donde quieras que aparezca (por ejemplo,
+     justo debajo de tu header/menú, en index.html).
+  3. Pega el bloque <style> dentro de tu hoja de estilos principal, o dentro
+     de un <style> en el <head> de la página. Las clases están prefijadas
+     con "kpra-" para no chocar con tus estilos actuales.
+  4. Reemplaza los 3 stickers de ejemplo por tus 3-5 diseños representativos.
+     No uses más de 5 en esta sección: para el catálogo completo por estado,
+     usa una cuadrícula aparte (no este layout de abanico).
+-->
+
+<section class="kpra-fan-hero">
+  <h1 class="kpra-fan-title">Kit de Cumplimiento — Distancia Kingpin / Tandem</h1>
+  <p class="kpra-fan-sub">Cada estado, su referencia. Elige la tuya.</p>
+
+  <div class="kpra-fan-stage">
+    <img class="kpra-ghost kpra-ghost-l2" src="images/sticker-ghost.png" alt="">
+    <img class="kpra-ghost kpra-ghost-l1" src="images/sticker-ghost.png" alt="">
+    <img class="kpra-ghost kpra-ghost-r1" src="images/sticker-ghost.png" alt="">
+    <img class="kpra-ghost kpra-ghost-r2" src="images/sticker-ghost.png" alt="">
+
+    <a href="/productos/california-40" class="kpra-card kpra-card-l">
+      <img src="images/sticker-40-california.png" alt="Sticker 40 pies — Ley de California, cumplimiento estricto">
+    </a>
+    <a href="/productos/federal-41" class="kpra-card kpra-card-m">
+      <img src="images/sticker-41-federal.png" alt="Sticker 41 pies — Referencia USA/Canadá/México, 12.5 metros">
+    </a>
+    <a href="/productos/noreste-43" class="kpra-card kpra-card-r">
+      <img src="images/sticker-43-noreste.png" alt="Sticker 43 pies — Connecticut, Indiana, Maine, Nueva York">
+    </a>
+  </div>
+
+  <div class="kpra-fan-caption">+ 47 estados y provincias disponibles &middot; ver catálogo completo</div>
+</section>
+
+<style>
+  .kpra-fan-hero {
+    background: radial-gradient(ellipse at 50% 20%, #2b2f36 0%, #1a1c20 60%, #101113 100%);
+    color: #f2f2f2;
+    text-align: center;
+    padding: 60px 20px 90px;
+    font-family: inherit; /* usa la tipografía de tu sitio */
+  }
+  .kpra-fan-title {
+    font-size: 26px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin: 0 0 6px;
+  }
+  .kpra-fan-sub {
+    color: #9aa0a8;
+    margin: 0 0 50px;
+    font-size: 15px;
+  }
+  .kpra-fan-stage {
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto;
+    height: 420px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .kpra-ghost {
+    position: absolute;
+    bottom: 10px;
+    width: 140px;
+    opacity: 0.35;
+    pointer-events: none;
+  }
+  .kpra-ghost-l1 { left: 4%;  transform: rotate(-24deg); }
+  .kpra-ghost-l2 { left: 13%; transform: rotate(-18deg); bottom: 0; }
+  .kpra-ghost-r1 { right: 4%; transform: rotate(24deg); }
+  .kpra-ghost-r2 { right: 13%; transform: rotate(18deg); bottom: 0; }
+
+  .kpra-card {
+    position: relative;
+    display: block;
+    width: 210px;
+    transition: transform .25s ease, filter .25s ease;
+    filter: drop-shadow(0 18px 20px rgba(0,0,0,0.45));
+  }
+  .kpra-card img { width: 100%; display: block; }
+  .kpra-card:hover {
+    transform: translateY(-14px) scale(1.04);
+    filter: drop-shadow(0 26px 24px rgba(0,0,0,0.55));
+    z-index: 10;
+  }
+  .kpra-card-l { transform: rotate(-11deg) translate(24px, 22px); z-index: 2; }
+  .kpra-card-m { width: 230px; transform: translateY(-14px); z-index: 3; }
+  .kpra-card-r { transform: rotate(11deg) translate(-24px, 22px); z-index: 2; }
+  .kpra-card-l:hover,
+  .kpra-card-r:hover { transform: translateY(-18px) scale(1.05); }
+
+  .kpra-fan-caption {
+    margin-top: 40px;
+    font-size: 13px;
+    color: #6f7580;
+    letter-spacing: .5px;
+  }
+
+  /* En pantallas angostas el abanico se ve apretado: lo aplanamos a una fila
+     simple sin rotación ni fantasmas, para que siga siendo legible en celular. */
+  @media (max-width: 640px) {
+    .kpra-ghost { display: none; }
+    .kpra-fan-stage {
+      height: auto;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      padding: 10px 0;
+    }
+    .kpra-card-l, .kpra-card-m, .kpra-card-r {
+      transform: none !important;
+      width: 100px;
+    }
+    .kpra-card:hover { transform: scale(1.05) !important; }
+  }
+</style>

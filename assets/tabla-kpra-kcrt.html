@@ -1,0 +1,147 @@
+<!--
+  TABLA: Referencia KPRA / KCRT por estado (reemplaza el diagrama)
+  ------------------------------------------------------------------
+  Cada fila ya trae, sin que el lector tenga que buscar en otro lado:
+  la distancia, el código que aplica, qué mide ese código (de dónde a
+  dónde) y a quién aplica. Clases prefijadas "kpra-" para no chocar
+  con tu CSS existente. Agrega tantas filas <tr> como estados tengas.
+-->
+
+<section class="kpra-table-section">
+  <div class="kpra-table-card">
+
+    <div class="kpra-table-head">
+      <span>MEASURE</span>
+      <span>CODE</span>
+      <span>MEASURED</span>
+      <span>APPLIES TO</span>
+    </div>
+
+    <div class="kpra-row kpra-row--strict">
+      <span class="kpra-measure">40'</span>
+      <span class="kpra-code">KPRA</span>
+      <span class="kpra-def">Kingpin &rarr; Rearmost Axle</span>
+      <span class="kpra-applies">California <em class="kpra-tag kpra-tag--strict">Strict enforcement</em></span>
+    </div>
+
+    <div class="kpra-row kpra-row--federal">
+      <span class="kpra-measure">41'</span>
+      <span class="kpra-code">KCRT</span>
+      <span class="kpra-def">Kingpin &rarr; Center of Rear Tandem</span>
+      <span class="kpra-applies">Federal <em class="kpra-tag kpra-tag--federal">USA &middot; Canada &middot; Mexico</em></span>
+    </div>
+
+    <div class="kpra-row">
+      <span class="kpra-measure">43'</span>
+      <span class="kpra-code">KPRA</span>
+      <span class="kpra-def">Kingpin &rarr; Rearmost Axle</span>
+      <span class="kpra-applies">CT &middot; IN &middot; ME &middot; NY</span>
+    </div>
+
+    <div class="kpra-row">
+      <span class="kpra-measure">43'</span>
+      <span class="kpra-code">KCRT</span>
+      <span class="kpra-def">Kingpin &rarr; Center of Rear Tandem</span>
+      <span class="kpra-applies">MA &middot; MN &middot; WI</span>
+    </div>
+
+    <p class="kpra-footnote">
+      <strong>KPRA</strong> = Kingpin to Rearmost Axle &middot;
+      <strong>KCRT</strong> = Kingpin to Center of Rear Tandem.
+      Distances shown are examples — always verify the current requirement for your route.
+    </p>
+  </div>
+</section>
+
+<style>
+  .kpra-table-section {
+    padding: 60px 20px;
+    display: flex;
+    justify-content: center;
+    background: #f4f5f6; /* cambia esto por el fondo real de tu página */
+  }
+  .kpra-table-card {
+    width: 100%;
+    max-width: 680px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 20px 40px rgba(15, 17, 20, 0.10);
+    padding: 8px 28px 24px;
+  }
+  .kpra-table-head,
+  .kpra-row {
+    display: grid;
+    grid-template-columns: 70px 74px 1fr 1.3fr;
+    align-items: center;
+    gap: 14px;
+  }
+  .kpra-table-head {
+    padding: 18px 14px 12px;
+    border-bottom: 2px solid #16181c;
+    font: 700 11px/1 Arial, Helvetica, sans-serif;
+    letter-spacing: .08em;
+    color: #8a8f98;
+  }
+  .kpra-row {
+    padding: 16px 14px;
+    border-bottom: 1px solid #ececec;
+    border-left: 4px solid #d7dade; /* color por defecto (gris) */
+    border-radius: 4px;
+  }
+  .kpra-row:last-of-type { border-bottom: none; }
+
+  .kpra-row--strict  { border-left-color: #e0342b; }
+  .kpra-row--federal { border-left-color: #16181c; }
+
+  .kpra-measure {
+    font: 700 22px/1 'Courier New', monospace;
+    color: #16181c;
+  }
+  .kpra-code {
+    display: inline-block;
+    font: 700 12px/1 'Courier New', monospace;
+    letter-spacing: .03em;
+    color: #4b4f56;
+    background: #f0f1f2;
+    padding: 5px 8px;
+    border-radius: 5px;
+    text-align: center;
+    width: fit-content;
+  }
+  .kpra-def {
+    font: 400 13.5px/1.35 Arial, Helvetica, sans-serif;
+    color: #5b5f66;
+  }
+  .kpra-applies {
+    font: 600 14px/1.3 Arial, Helvetica, sans-serif;
+    color: #16181c;
+  }
+  .kpra-tag {
+    display: block;
+    font: 700 10.5px/1 Arial, Helvetica, sans-serif;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    font-style: normal;
+    margin-top: 4px;
+  }
+  .kpra-tag--strict   { color: #e0342b; }
+  .kpra-tag--federal  { color: #6b7076; }
+
+  .kpra-footnote {
+    margin: 18px 14px 6px;
+    font: 400 12px/1.5 Arial, Helvetica, sans-serif;
+    color: #8a8f98;
+  }
+  .kpra-footnote strong { color: #5b5f66; }
+
+  /* Mobile: apilar cada fila como una mini-ficha en vez de 4 columnas */
+  @media (max-width: 560px) {
+    .kpra-table-head { display: none; }
+    .kpra-row {
+      grid-template-columns: 1fr;
+      gap: 6px;
+      row-gap: 4px;
+    }
+    .kpra-measure { font-size: 26px; }
+  }
+</style>

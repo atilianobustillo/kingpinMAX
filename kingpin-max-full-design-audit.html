@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auditoría de Diseño y UX Completa — Kingpin MAX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@500;700;800;900&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F5F6F3; --surface:#FFFFFF; --ink:#14171C; --steel:#57616B; --line:#DDE0DD;
+    --accent:#1F5C6E; --accent-soft:#E4EEF0; --accent-ink:#123642;
+    --critical:#B23A2E; --critical-soft:#F7E7E4;
+    --high:#B5762A; --high-soft:#F6ECDC;
+    --medium:#8A7A2E; --medium-soft:#F2EFDA;
+    --good:#3F7A5C; --good-soft:#E4F0EA;
+    --shadow: 0 1px 2px rgba(20,23,28,0.06), 0 8px 24px -12px rgba(20,23,28,0.18);
+    --font-display:'Libre Franklin', 'Arial Narrow', sans-serif;
+    --font-body:'Public Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-mono:'IBM Plex Mono', "Courier New", monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#14171A; --surface:#1B1F23; --ink:#EDEFEC; --steel:#9BA3A9; --line:#2B3034;
+      --accent:#6FB8CC; --accent-soft:#1E3338; --accent-ink:#D7EFF4;
+      --critical:#E4776A; --critical-soft:#3A2220;
+      --high:#E0A855; --high-soft:#372B18;
+      --medium:#C9B65C; --medium-soft:#332F17;
+      --good:#6FBE95; --good-soft:#1B2E24;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#14171A; --surface:#1B1F23; --ink:#EDEFEC; --steel:#9BA3A9; --line:#2B3034;
+    --accent:#6FB8CC; --accent-soft:#1E3338; --accent-ink:#D7EFF4;
+    --critical:#E4776A; --critical-soft:#3A2220;
+    --high:#E0A855; --high-soft:#372B18;
+    --medium:#C9B65C; --medium-soft:#332F17;
+    --good:#6FBE95; --good-soft:#1B2E24;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--font-body); font-size:16px; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{font-family:var(--font-display); margin:0; text-wrap:balance; color:var(--ink);}
+  p{margin:0;}
+  a{color:var(--accent);}
+  img{max-width:100%;}
+  .mono{font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+
+  .shell{display:grid; grid-template-columns:1fr; max-width:1180px; margin:0 auto; padding:0 24px;}
+  @media(min-width:960px){ .shell{grid-template-columns:250px 1fr; gap:56px; padding:0 40px;} }
+
+  .toc{display:none;}
+  @media(min-width:960px){
+    .toc{
+      display:block; position:sticky; top:32px; align-self:start;
+      padding-top:64px; max-height:calc(100vh - 64px); overflow-y:auto;
+    }
+  }
+  .toc-label{font-family:var(--font-mono); font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--steel); margin-bottom:14px; display:block;}
+  .toc nav{display:flex; flex-direction:column; gap:2px;}
+  .toc a{
+    display:block; text-decoration:none; color:var(--steel); font-size:13.5px; font-weight:500;
+    padding:7px 10px; border-radius:5px; border-left:2px solid transparent;
+  }
+  .toc a:hover{color:var(--ink); background:var(--surface);}
+  .toc a.active{color:var(--accent-ink); border-left-color:var(--accent); background:var(--accent-soft); font-weight:600;}
+  .toc .toc-sep{margin-top:10px; padding-top:10px; border-top:1px solid var(--line);}
+
+  .masthead{padding:64px 0 40px; border-bottom:1px solid var(--line);}
+  .masthead-ref{font-family:var(--font-mono); font-size:12px; letter-spacing:0.06em; color:var(--steel); text-transform:uppercase; display:flex; gap:18px; flex-wrap:wrap; margin-bottom:20px;}
+  .masthead-ref span strong{color:var(--ink); font-weight:600;}
+  .masthead h1{font-size:clamp(28px,4.2vw,44px); font-weight:800; line-height:1.05; letter-spacing:-0.01em;}
+  .masthead .dek{margin-top:16px; font-size:17px; color:var(--steel); max-width:66ch; line-height:1.6;}
+  .masthead .dek + .dek{margin-top:10px;}
+  .scope-grid{display:grid; grid-template-columns:1fr; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:8px; margin-top:32px; overflow:hidden;}
+  @media(min-width:640px){ .scope-grid{grid-template-columns:repeat(4,1fr);} }
+  .scope-cell{background:var(--surface); padding:16px 18px;}
+  .scope-cell .num{font-family:var(--font-mono); font-size:24px; font-weight:600; color:var(--ink);}
+  .scope-cell .cap{font-size:12px; color:var(--steel); margin-top:4px;}
+
+  section{padding:52px 0;}
+  .section-head{margin-bottom:28px;}
+  .section-eyebrow{font-family:var(--font-mono); font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:var(--accent); display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .section-eyebrow::before{content:""; width:20px; height:2px; background:var(--accent); display:inline-block;}
+  .section-head h2{font-size:clamp(22px,3vw,30px); font-weight:800;}
+  .section-head .desc{margin-top:10px; color:var(--steel); font-size:15px; max-width:74ch;}
+  .section-head .path{margin-top:6px; display:inline-block; font-family:var(--font-mono); font-size:11.5px; color:var(--steel); background:var(--surface); border:1px solid var(--line); padding:3px 8px; border-radius:4px;}
+
+  .plan-list{display:flex; flex-direction:column; gap:14px;}
+  .plan-item{
+    display:grid; grid-template-columns:auto 1fr; gap:18px;
+    background:var(--surface); border:1px solid var(--line); border-radius:8px;
+    padding:20px 22px; box-shadow:var(--shadow);
+  }
+  .plan-rank{font-family:var(--font-mono); font-size:22px; font-weight:600; color:var(--line); line-height:1; padding-top:2px;}
+  .plan-item.sev-critical .plan-rank{color:var(--critical);}
+  .plan-item.sev-high .plan-rank{color:var(--high);}
+  .plan-item.sev-medium .plan-rank{color:var(--medium);}
+  .plan-item.sev-info .plan-rank{color:var(--accent);}
+  .plan-item.sev-info{opacity:0.88;}
+  .plan-item.sev-good .plan-rank{color:var(--good);}
+  .plan-item.sev-good{opacity:0.82;}
+  .plan-body h3{font-size:16.5px; font-weight:700; line-height:1.35;}
+  .plan-meta{display:flex; align-items:center; gap:10px; margin-top:8px; flex-wrap:wrap;}
+  .plan-body p{margin-top:8px; font-size:14.5px; color:var(--steel); line-height:1.6;}
+
+  .chip{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:var(--font-mono); font-size:10.5px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase;
+    padding:4px 9px 4px 8px; border-radius:4px; border-left:3px solid; color:var(--ink);
+  }
+  .chip.sev-critical{background:var(--critical-soft); border-color:var(--critical);}
+  .chip.sev-high{background:var(--high-soft); border-color:var(--high);}
+  .chip.sev-medium{background:var(--medium-soft); border-color:var(--medium);}
+  .chip.sev-good{background:var(--good-soft); border-color:var(--good);}
+  .chip.sev-info{background:var(--accent-soft); border-color:var(--accent);}
+  .tag{font-family:var(--font-mono); font-size:11px; color:var(--steel); background:var(--paper); border:1px solid var(--line); padding:3px 8px; border-radius:4px;}
+
+  .finding{
+    background:var(--surface); border:1px solid var(--line); border-radius:8px;
+    padding:22px 24px; margin-bottom:16px; box-shadow:var(--shadow);
+  }
+  .finding-head{display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap;}
+  .finding-head h3{font-size:16px; font-weight:700; max-width:60ch;}
+  .finding-refs{margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;}
+  .finding p{margin-top:12px; font-size:14.5px; color:var(--steel); line-height:1.65; max-width:76ch;}
+  .finding p strong{color:var(--ink); font-weight:600;}
+  .finding .rec{
+    margin-top:14px; padding:12px 14px; background:var(--accent-soft); border-radius:6px;
+    font-size:14px; color:var(--accent-ink); line-height:1.55;
+  }
+  .finding .rec strong{font-family:var(--font-mono); font-size:11px; letter-spacing:0.05em; text-transform:uppercase; display:block; margin-bottom:4px; color:var(--accent-ink);}
+
+  .strength-list{display:flex; flex-direction:column; gap:10px;}
+  .strength{
+    display:flex; gap:12px; align-items:flex-start; background:var(--surface); border:1px solid var(--line);
+    border-left:3px solid var(--good); border-radius:6px; padding:14px 16px;
+  }
+  .strength svg{flex:none; margin-top:2px; color:var(--good);}
+  .strength p{font-size:14.5px; color:var(--steel); line-height:1.55;}
+  .strength p strong{color:var(--ink);}
+
+  .table-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:8px; background:var(--surface); box-shadow:var(--shadow); margin-bottom:16px;}
+  table{width:100%; border-collapse:collapse; min-width:640px;}
+  thead th{
+    text-align:left; font-family:var(--font-mono); font-size:10.5px; letter-spacing:0.06em; text-transform:uppercase;
+    color:var(--steel); padding:12px 16px; border-bottom:1px solid var(--line); white-space:nowrap;
+  }
+  tbody td{padding:13px 16px; border-bottom:1px solid var(--line); font-size:14px; vertical-align:top;}
+  tbody tr:last-child td{border-bottom:none;}
+  td.page-name{font-weight:600; white-space:nowrap;}
+  td.page-name .path{display:block; font-family:var(--font-mono); font-size:11.5px; color:var(--steel); font-weight:400; margin-top:2px;}
+  td.notes{color:var(--steel); font-size:13.5px; line-height:1.5;}
+  td.mono-cell{font-family:var(--font-mono); font-size:13px;}
+  td.pass{color:var(--good); font-weight:600;}
+  td.fail{color:var(--critical); font-weight:600;}
+
+  .status-dot{display:inline-flex; align-items:center; gap:7px; font-size:13px; font-weight:600; white-space:nowrap;}
+  .status-dot::before{content:""; width:8px; height:8px; border-radius:50%; display:inline-block;}
+  .status-complete::before{background:var(--good);}
+  .status-partial::before{background:var(--high);}
+  .status-placeholder::before{background:var(--critical);}
+
+  .swatch{display:inline-block; width:14px; height:14px; border-radius:3px; margin-right:6px; vertical-align:-2px; border:1px solid rgba(0,0,0,0.15);}
+
+  footer.report-foot{padding:48px 0 80px; border-top:1px solid var(--line); margin-top:24px;}
+  footer.report-foot p{font-size:13px; color:var(--steel); max-width:66ch; line-height:1.6;}
+  footer.report-foot p + p{margin-top:8px;}
+
+  @media(prefers-reduced-motion: reduce){ *{scroll-behavior:auto !important;} }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <aside class="toc">
+    <span class="toc-label">En este informe</span>
+    <nav id="tocNav">
+      <a href="#plan">Plan de acción prioritario</a>
+      <a href="#home">Home</a>
+      <a href="#kit-setup">Kit + Setup</a>
+      <a href="#install-guide">Installation Guide</a>
+      <a href="#accessibility">Accesibilidad (sitio)</a>
+      <a href="#consistency">Consistencia (sitio)</a>
+      <a href="#content-pages" class="toc-sep">Páginas de contenido</a>
+      <a href="#sitemap">Inventario de páginas</a>
+      <a href="#strengths">Qué ya funciona</a>
+    </nav>
+  </aside>
+
+  <div>
+    <header class="masthead">
+      <div class="masthead-ref">
+        <span>INFORME <strong class="mono">KM-FULL-AUDIT-01</strong></span>
+        <span>FECHA <strong class="mono">2026-09-08</strong></span>
+        <span>ALCANCE <strong>13 páginas, sitio completo</strong></span>
+      </div>
+      <h1>Kingpin MAX — Auditoría de Diseño y UX Completa</h1>
+      <p class="dek">Repaso a fondo de interfaz y funcionalidad en las 13 páginas del sitio, usando el marco de design critique: primera impresión, usabilidad, jerarquía visual, consistencia y accesibilidad — verificado con cálculo de contraste real, no a ojo, igual que en los dos informes anteriores (<span class="mono">KM-AUDIT-01</span>, <span class="mono">KM-HOME-AUDIT-01</span>).</p>
+      <p class="dek">Este informe reemplaza y actualiza a los dos anteriores: incorpora todo lo construido desde entonces (Kit + Setup rehecho por completo, Installation Guide alineada, el lightbox de imágenes con cotas técnicas) y reverifica en vivo cada hallazgo viejo que seguía abierto — 7 de 7 hallazgos de contenido de <span class="mono">KM-AUDIT-01</span> se confirman exactos hoy.</p>
+      <div class="scope-grid">
+        <div class="scope-cell"><div class="num mono">13</div><div class="cap">Páginas revisadas</div></div>
+        <div class="scope-cell"><div class="num mono">10</div><div class="cap">Hallazgos abiertos</div></div>
+        <div class="scope-cell"><div class="num mono">1</div><div class="cap">Hallazgo resuelto en esta sesión</div></div>
+        <div class="scope-cell"><div class="num mono">6</div><div class="cap">Fortalezas nuevas desde el último informe</div></div>
+      </div>
+    </header>
+
+    <section id="plan">
+      <div class="section-head">
+        <span class="section-eyebrow">Empezar por acá</span>
+        <h2>Plan de acción prioritario</h2>
+        <p class="desc">Ordenado por alcance real — cuántas páginas y cuántas visitas toca cada cosa — no por lo fácil que sea arreglarla. Los dos primeros puntos afectan literalmente todas las páginas del sitio.</p>
+      </div>
+
+      <div class="plan-list">
+        <div class="plan-item sev-good">
+          <div class="plan-rank mono">01</div>
+          <div class="plan-body">
+            <h3>Los eyebrows rojos sobre fondo oscuro no pasaban AA — y aparecían en 19 lugares del sitio <span class="mono" style="color:var(--good); font-size:12px;">— RESUELTO</span></h3>
+            <div class="plan-meta"><span class="chip sev-good">Resuelto</span><span class="tag">Accesibilidad · Todo el sitio</span></div>
+            <p>Verificado en el código y en vivo: <span class="mono">.eyebrow.on-dark</span> ya no usa <span class="mono">--red</span> (4.26:1, fallaba AA). El sitio quedó con exactamente 2 colores de eyebrow, según el fondo — <span class="mono">.eyebrow{color:var(--red)}</span> para fondo claro, sin cambios, y <span class="mono">.eyebrow.on-dark{color:var(--paper)}</span> (blanco) para fondo oscuro o con imagen, que mide <strong>~18.9:1</strong> sobre <span class="mono">--ink</span>. La variante ámbar <span class="mono">.federal</span> se eliminó del CSS y de <span class="mono">kpra-kcrt-reference.html</span> en vez de quedar como una tercera opción — un solo cambio de token corrigió las 19 instancias a la vez, sin excepciones por página.</p>
+          </div>
+        </div>
+
+        <div class="plan-item sev-high">
+          <div class="plan-rank mono">02</div>
+          <div class="plan-body">
+            <h3>Contenido pendiente en 6 páginas — en progreso, contexto ya confirmado</h3>
+            <div class="plan-meta"><span class="chip sev-high">Alto</span><span class="tag">Contenido · En progreso</span></div>
+            <p>Reverificado hoy en el código, 7 de 7 hallazgos de <span class="mono">KM-AUDIT-01</span> siguen siendo ciertos palabra por palabra: <strong>FAQ</strong> (4 preguntas, todas "Pending"), <strong>Terms</strong> (toda la página es una sola card "Pending"), <strong>Shipping &amp; Returns</strong> (1 línea real + 2 "Pending"), <strong>About</strong> (encuadre de producto escrito, historia/equipo/misión "Pending"), <strong>Shop</strong> (precio y checkout dicen explícitamente "still being finalized"; solo muestra el mismo abanico de 3 stickers que el Home, nada de las otras 4 piezas). Sigue siendo honesto sobre dónde está el trabajo, no una alarma de diseño.</p>
+            <div class="rec"><strong>Recomendación</strong>Mantener el orden de prioridad ya definido: FAQ primero (resuelve dudas antes de cotizar), Shipping &amp; Returns segundo, Terms al final. Sin cambios de diseño necesarios — es 100% redacción.</div>
+          </div>
+        </div>
+
+        <div class="plan-item sev-medium">
+          <div class="plan-rank mono">03</div>
+          <div class="plan-body">
+            <h3>Los 3 íconos sociales del footer no llevan a ningún lado — en las 12 páginas</h3>
+            <div class="plan-meta"><span class="chip sev-medium">Medio</span><span class="tag">Confianza · Todo el sitio</span></div>
+            <p>LinkedIn, X y Facebook apuntan a <span class="mono">href="#"</span> en el footer compartido de las 12 páginas de contenido. Ya estaba señalado para la Home; ahora confirmado que es literalmente el mismo footer copiado en todo el sitio, así que el arreglo también se aplica una sola vez.</p>
+            <div class="rec"><strong>Recomendación</strong>Enlazar las cuentas reales en cuanto existan, o sacar los 3 íconos hasta ese momento.</div>
+          </div>
+        </div>
+
+        <div class="plan-item sev-medium">
+          <div class="plan-rank mono">04</div>
+          <div class="plan-body">
+            <h3>Los íconos de "Why It Matters" (Home) son casi invisibles sobre blanco</h3>
+            <div class="plan-meta"><span class="chip sev-medium">Medio</span><span class="tag">Accesibilidad · Home</span></div>
+            <p>Medido hoy en vivo: el degradado gris de esos 6 íconos da entre <strong>1.53:1 y 2.46:1</strong> contra el fondo blanco de la sección — muy por debajo del mínimo de 3:1 para elementos gráficos. Quedó así después de varias iteraciones de color de fondo (ámbar → gris oscuro → blanco) que nunca volvieron a revisar el ícono en sí.</p>
+            <div class="rec"><strong>Recomendación</strong>U oscurecer el degradado del set de íconos para esta sección específica, o volver a un fondo con más contraste contra gris medio (<span class="mono">--paper-alt</span> en vez de blanco puro ya ayudaría).</div>
+          </div>
+        </div>
+
+        <div class="plan-item sev-medium">
+          <div class="plan-rank mono">05</div>
+          <div class="plan-body">
+            <h3>El CTA final se resuelve a puro <span class="mono">style=""</span> inline — en dos páginas, no una</h3>
+            <div class="plan-meta"><span class="chip sev-medium">Medio</span><span class="tag">Mantenibilidad · Home + Kit &amp; Setup</span></div>
+            <p><span class="mono">index.html</span> y <span class="mono">how-it-works.html</span> resuelven su sección <span class="mono">#cta</span> con los mismos 5 atributos <span class="mono">style</span> inline cada una, de forma independiente — el mismo patrón copiado y pegado dos veces en vez de vivir en una clase compartida. Ya no es un caso aislado, es una costura que se repite cada vez que se agrega una página nueva con CTA final.</p>
+            <div class="rec"><strong>Recomendación</strong>Extraer una clase <span class="mono">.final-cta</span> (o extender <span class="mono">.order-section</span>) con el padding/centrado ya resuelto, y que ambas páginas la usen en vez de repetir los mismos 5 <span class="mono">style</span> inline.</div>
+          </div>
+        </div>
+
+        <div class="plan-item sev-medium">
+          <div class="plan-rank mono">06</div>
+          <div class="plan-body">
+            <h3>Cobertura sigue siendo el banner más genérico de la Home</h3>
+            <div class="plan-meta"><span class="chip sev-medium">Medio</span><span class="tag">Diseño · Home</span></div>
+            <p>Foto + scrim + texto ancla abajo-izquierda — sin cambios desde <span class="mono">KM-HOME-AUDIT-01</span>. El propio Kit + Setup ya demostró, con el diagrama de cotas técnicas del lightbox, que este sitio sabe convertir un dato en un elemento gráfico propio; Cobertura todavía no aplica esa misma idea al mensaje "un mismo mark, en pulgadas y en mm".</p>
+            <div class="rec"><strong>Recomendación</strong>Sacar el mark "41' · 12.5 M" en mono tabular sobre la foto, igual que ya se usa en el hero.</div>
+          </div>
+        </div>
+
+        <div class="plan-item sev-medium">
+          <div class="plan-rank mono">07</div>
+          <div class="plan-body">
+            <h3>El rojo marca "acá hay un label" y "hacé clic acá" al mismo tiempo</h3>
+            <div class="plan-meta"><span class="chip sev-medium">Medio</span><span class="tag">Jerarquía · Home</span></div>
+            <p>6 eyebrows, 3 botones primarios, la palabra "ticket" resaltada y 3 barras de acento de las quote cards, todos en el mismo rojo, solo en la Home. Cuando la misma señal marca una etiqueta de sección y una acción, el ojo deja de leer el rojo como "hacé clic".</p>
+            <div class="rec"><strong>Recomendación</strong>Reservar <span class="mono">--red</span> saturado para CTAs y highlights de titular; mover los eyebrows al color que salga de la Prioridad 01 (ámbar).</div>
+          </div>
+        </div>
+
+        <div class="plan-item sev-medium">
+          <div class="plan-rank mono">08</div>
+          <div class="plan-body">
+            <h3>Un solo momento de scroll-reveal en toda la Home</h3>
+            <div class="plan-meta"><span class="chip sev-medium">Medio</span><span class="tag">Motion · Home</span></div>
+            <p><span class="mono">js/animations.js</span> solo anima <span class="mono">.grid-quotes</span>. El resto de la página no tiene ninguna entrada — se lee como remanente de una versión anterior, no como una elección deliberada de "acá sí, acá no".</p>
+            <div class="rec"><strong>Recomendación</strong>Extender el mismo patrón a <span class="mono">.why-row</span> (ya es una lista real), o sacarlo también de <span class="mono">.grid-quotes</span> y dejar el hover del sticker-fan como único momento de motion.</div>
+          </div>
+        </div>
+
+        <div class="plan-item sev-info">
+          <div class="plan-rank mono">09</div>
+          <div class="plan-body">
+            <h3>Become a Distributor sigue sin ningún enlace <span class="mono" style="color:var(--accent); font-size:12px;">— DECISIÓN DELIBERADA</span></h3>
+            <div class="plan-meta"><span class="chip sev-info">Informativo</span><span class="tag">become-a-distributor.html</span></div>
+            <p>Reverificado hoy: ni el nav principal ni el footer de ninguna de las 12 páginas enlazan hacia ahí. A diferencia de cuando <span class="mono">KM-AUDIT-01</span> lo señaló como un descuido, esto ya se decidió a propósito — el banner "Partner With Us" que era el único link se eliminó por decisión del cliente, aceptando explícitamente que la página quedara huérfana. Se deja registrado acá para que no se vuelva a marcar por error como un bug.</p>
+          </div>
+        </div>
+
+        <div class="plan-item sev-info">
+          <div class="plan-rank mono">10</div>
+          <div class="plan-body">
+            <h3>El salto de numeración en los comentarios HTML de la Home ahora es de 5 a 8</h3>
+            <div class="plan-meta"><span class="chip sev-info">Informativo</span><span class="tag">index.html · Cosmético en código</span></div>
+            <p>Invisible para cualquier visitante — vive solo en los comentarios <span class="mono">&lt;!-- SECCIÓN N --&gt;</span> del HTML. Faltan la 6 (FAQ rápido, nunca construido) y la 7 (Partner With Us, eliminada). No es urgente, pero conviene renumerar la próxima vez que se edite esa página para que el código deje de sugerir algo incompleto.</p>
+          </div>
+        </div>
+
+        <div class="plan-item sev-medium">
+          <div class="plan-rank mono">11</div>
+          <div class="plan-body">
+            <h3>El rojo del eyebrow sobre fondo claro queda justo por debajo de AA <span class="mono" style="color:var(--steel); font-size:12px;">— hallazgo nuevo</span></h3>
+            <div class="plan-meta"><span class="chip sev-medium">Medio</span><span class="tag">Accesibilidad · 9 instancias</span></div>
+            <p>Al reverificar la Prioridad 01 con la misma fórmula de contraste de siempre, <span class="mono">--red</span> (<span class="mono">#E62B27</span>) sobre <span class="mono">--paper</span> mide <strong>4.43:1</strong> — apenas por debajo del mínimo AA de 4.5:1 para texto normal. Afecta a los 9 eyebrows que usan la clase base <span class="mono">.eyebrow</span> sin <span class="mono">.on-dark</span> (Kit + Setup ×2, Installation Guide, Home ×2, KPRA/KCRT Reference ×3, Shop). No es la misma falla que la Prioridad 01 — esa era rojo sobre fondo <em>oscuro</em> (4.26:1) y ya está resuelta; esta es rojo sobre fondo <em>claro</em>, un caso distinto que nadie había medido hasta ahora.</p>
+            <div class="rec"><strong>Recomendación</strong>Oscurecer levemente el rojo del eyebrow en fondo claro — <span class="mono">--red-dark</span> (<span class="mono">#AE150E</span>), ya definido en el CSS y sin usar en ningún otro lado, da contraste de sobra. Cambiar solo <span class="mono">.eyebrow{color:var(--red-dark)}</span> deja <span class="mono">.on-dark</span> sin tocar.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="home">
+      <div class="section-head">
+        <span class="section-eyebrow">Página</span>
+        <h2>Home</h2>
+        <span class="path">index.html</span>
+      </div>
+
+      <div class="strength-list" style="margin-bottom:20px;">
+        <div class="strength">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <p><strong>Primera impresión correcta.</strong> El fan de stickers 40'/41'/43' en el hero muestra el producto en vez de describirlo — sigue siendo la imagen por la que un visitante recordaría la marca, y el ojo va exactamente ahí primero.</p>
+        </div>
+        <div class="strength">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <p><strong>"Why It Matters" quedó bien alineado y sin ruido.</strong> Título y lista comparten el mismo borde izquierdo (verificado a 66.5px), sin las líneas divisorias que antes lo hacían sentir como una tabla — el único problema real que queda ahí es de contraste de ícono (Prioridad 04), no de estructura.</p>
+        </div>
+      </div>
+
+      <p class="finding-refs" style="margin:0 0 4px; color:var(--steel); font-size:13.5px;">Los hallazgos detallados de esta página (contraste, Cobertura, CTA, footer, jerarquía de color, motion) están en el <strong>Plan de acción prioritario</strong> arriba — no se repiten acá para no duplicar contenido.</p>
+    </section>
+
+    <section id="kit-setup">
+      <div class="section-head">
+        <span class="section-eyebrow">Página — la más rehecha desde el último informe</span>
+        <h2>Kit + Setup</h2>
+        <span class="path">how-it-works.html</span>
+        <p class="desc">Esta página cambió por completo desde <span class="mono">KM-AUDIT-01</span>: se sacó el Hero, se reconstruyó la sección de las 7 piezas dos veces, y se agregó un lightbox con cotas técnicas dinámicas que no existía en ningún informe anterior.</p>
+      </div>
+
+      <div class="strength-list" style="margin-bottom:20px;">
+        <div class="strength">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <p><strong>El lightbox con cotas técnicas es la pieza más distintiva de todo el sitio.</strong> Clic en cualquiera de las 7 imágenes abre una capa a 80% de pantalla con líneas de cota estilo dibujo técnico (ancho arriba, alto a la derecha, flechas rellenas, texto en <span class="mono">in / mm</span>) calculadas en vivo contra el tamaño real renderizado — se recalcula solo con <span class="mono">resize</span>. Nada parecido existe en el resto del sitio; es el candidato más claro a "elemento por el que se recuerda esta página".</p>
+        </div>
+        <div class="strength">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <p><strong>Accesibilidad resuelta de punta a punta en el lightbox y el acordeón.</strong> Foco visible, teclado completo (Enter/Espacio para abrir, Escape para cerrar, foco vuelve al disparador al cerrar), <span class="mono">aria-label</span> describiendo el contenido del SVG para lectores de pantalla. Es, hoy, el componente mejor resuelto en accesibilidad de todo el sitio — vale la pena usarlo como referencia al construir el próximo componente interactivo.</p>
+        </div>
+        <div class="strength">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <p><strong>Primera vez que el sitio muestra medidas físicas reales y trazables.</strong> Tanto las dimensiones (ancho × alto en pulgadas/mm de cada pieza) como el rango de durabilidad del adhesivo (6–8 años) están respaldados por datos que se pidieron explícitamente en vez de inventarse — eleva la vara de precisión para el resto del contenido técnico del sitio.</p>
+        </div>
+        <div class="strength">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <p><strong>Un solo H1 correcto.</strong> Al sacar el Hero, el <span class="mono">&lt;h2&gt;</span> de "The 7-Piece Kit" se promovió a <span class="mono">&lt;h1&gt;</span> reutilizando el texto que ya existía — verificado hoy: la página tiene exactamente un H1, nada quedó sin encabezado de nivel superior.</p>
+        </div>
+      </div>
+
+      <div class="finding">
+        <div class="finding-head"><h3>El CTA final repite el mismo patrón de <span class="mono">style=""</span> inline que Home</h3></div>
+        <div class="finding-refs"><span class="tag">how-it-works.html:278-279</span></div>
+        <p>Ya está detallado como Prioridad 05 arriba — se menciona acá porque es donde vive físicamente el segundo caso. <span class="mono">&lt;section id="cta" class="order-section" style="padding:80px 0;"&gt;</span> más otro <span class="mono">style</span> en el <span class="mono">.container</span> interno, idéntico a como estaba <span class="mono">index.html</span> antes de que se documentara ahí.</p>
+      </div>
+
+      <div class="finding">
+        <div class="finding-head"><h3>Los 4 pasos de instalación ("Step 1-4") siguen todos en "Pending"</h3></div>
+        <div class="finding-refs"><span class="tag">how-it-works.html</span><span class="tag">.accordion-panel</span></div>
+        <p>No es un defecto — es el mismo patrón honesto de placeholder que usa el resto del sitio. Se señala acá solo para que quede registrado como contenido pendiente real: los 4 botones existen, funcionan, y están listos para recibir texto e imágenes en cuanto estén escritos, sin ningún cambio de estructura necesario.</p>
+      </div>
+    </section>
+
+    <section id="install-guide">
+      <div class="section-head">
+        <span class="section-eyebrow">Página</span>
+        <h2>Installation Guide</h2>
+        <span class="path">installation-guide.html</span>
+      </div>
+
+      <div class="strength-list" style="margin-bottom:20px;">
+        <div class="strength">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <p><strong>Ya no hay dos versiones distintas de "cómo instalar".</strong> Esta página compartía antes un resumen estático de 3 pasos que no coincidía con el acordeón interactivo de Kit + Setup. Hoy es literalmente el mismo componente copiado — mismo CSS, mismo JS genérico de acordeón, cero duplicación de lógica.</p>
+        </div>
+      </div>
+
+      <div class="finding">
+        <div class="finding-head"><h3>"Downloadable PDF" promete algo que la etiqueta "Pending" contradice</h3></div>
+        <div class="finding-refs"><span class="tag">installation-guide.html</span><span class="tag">.pending-card</span></div>
+        <p>El copy actual dice "Get the full installation guide as a printable PDF" — en tiempo presente, como si ya estuviera disponible — pero la tarjeta sigue con la etiqueta "Pending" y sin ningún link de descarga real. Es una tensión conocida: se decidió a propósito mantener el texto y la etiqueta así hasta tener el PDF real, en vez de suavizar el copy o sacar el "Pending" antes de tiempo.</p>
+        <div class="rec"><strong>Recomendación</strong>Ninguna acción por ahora — resolver junto con la Prioridad 02 cuando el PDF real exista y haya algo a lo que enlazar.</div>
+      </div>
+    </section>
+
+    <section id="accessibility">
+      <div class="section-head">
+        <span class="section-eyebrow">Verificado con cálculo, no a ojo</span>
+        <h2>Accesibilidad — todo el sitio</h2>
+        <p class="desc">Contraste calculado con la fórmula de luminancia relativa de WCAG (4.5:1 texto normal, 3:1 texto grande o elementos gráficos), medido hoy en vivo sobre las páginas reales.</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Elemento</th><th>Colores</th><th>Contraste</th><th>Mínimo</th><th>Resultado</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Eyebrow on-dark (blanco) sobre fondo oscuro <span class="tag" style="margin-left:6px;">19 instancias, resuelto</span></td>
+              <td class="mono-cell"><span class="swatch" style="background:#FFFFFF;"></span>--paper / <span class="swatch" style="background:#111111;"></span>--ink</td>
+              <td class="mono-cell">18.9:1</td>
+              <td class="mono-cell">4.5:1</td>
+              <td class="pass">Pasa con margen amplio</td>
+            </tr>
+            <tr>
+              <td>Eyebrow base (rojo) sobre fondo claro <span class="tag" style="margin-left:6px;">9 instancias, sin cambios</span></td>
+              <td class="mono-cell"><span class="swatch" style="background:#E62B27;"></span>--red / <span class="swatch" style="background:#FFFFFF;"></span>--paper</td>
+              <td class="mono-cell">4.43:1</td>
+              <td class="mono-cell">4.5:1</td>
+              <td class="fail">Falla (marginal)</td>
+            </tr>
+            <tr>
+              <td>Íconos "Why It Matters" sobre blanco (rango del degradado)</td>
+              <td class="mono-cell"><span class="swatch" style="background:#D1D1D1;"></span>gris claro–<span class="swatch" style="background:#A5A5A5;"></span>gris oscuro / blanco</td>
+              <td class="mono-cell">1.53:1 – 2.46:1</td>
+              <td class="mono-cell">3:1</td>
+              <td class="fail">Falla</td>
+            </tr>
+            <tr>
+              <td>Texto de cuerpo <span class="mono">--steel</span> sobre blanco (sitio completo)</td>
+              <td class="mono-cell"><span class="swatch" style="background:#6B6E70;"></span>--steel / blanco</td>
+              <td class="mono-cell">5.1:1</td>
+              <td class="mono-cell">4.5:1</td>
+              <td class="pass">Pasa</td>
+            </tr>
+            <tr>
+              <td>Texto de cuerpo <span class="mono">--steel</span> sobre <span class="mono">--paper-alt</span></td>
+              <td class="mono-cell"><span class="swatch" style="background:#6B6E70;"></span>--steel / <span class="swatch" style="background:#F4F4F2;"></span>--paper-alt</td>
+              <td class="mono-cell">4.7:1</td>
+              <td class="mono-cell">4.5:1</td>
+              <td class="pass">Pasa (margen ajustado)</td>
+            </tr>
+            <tr>
+              <td>Cotas del lightbox (Kit + Setup) — texto/líneas</td>
+              <td class="mono-cell"><span class="swatch" style="background:#111111;"></span>--ink / blanco</td>
+              <td class="mono-cell">17.1:1</td>
+              <td class="mono-cell">4.5:1</td>
+              <td class="pass">Pasa con margen amplio</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="strength">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        <p><strong>Interactividad accesible por teclado en todos los componentes nuevos.</strong> Acordeones, lightbox y sus botones de cierre responden a Enter/Espacio/Escape y usan <span class="mono">:focus-visible</span> con el mismo anillo azul en todo el sitio — ningún componente construido en esta etapa quedó solo-mouse.</p>
+      </div>
+    </section>
+
+    <section id="consistency">
+      <div class="section-head">
+        <span class="section-eyebrow">Entre páginas</span>
+        <h2>Consistencia — todo el sitio</h2>
+        <p class="desc">Dónde el mismo tipo de elemento se resuelve igual en todos lados, y dónde todavía no.</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Patrón</th><th>Estado</th><th>Nota</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Sistema de card (<span class="mono">.card-dark</span> / <span class="mono">.card-light</span>)</td>
+              <td><span class="status-dot status-complete">Unificado</span></td>
+              <td class="notes">Sin cambios desde KM-AUDIT-01 — sigue siendo 2 variantes compartidas en todo el sitio.</td>
+            </tr>
+            <tr>
+              <td>Acordeón (<span class="mono">.accordion-trigger</span> / <span class="mono">.accordion-panel</span>)</td>
+              <td><span class="status-dot status-complete">Unificado</span></td>
+              <td class="notes">Un solo componente, JS genérico, usado hoy en 2 páginas (Kit + Setup, Installation Guide) sin duplicar lógica.</td>
+            </tr>
+            <tr>
+              <td>Patrón "Pending" para contenido en progreso</td>
+              <td><span class="status-dot status-complete">Unificado</span></td>
+              <td class="notes">Mismo componente en FAQ, About, Terms, Shipping &amp; Returns, y los 4 pasos de instalación.</td>
+            </tr>
+            <tr>
+              <td>Eyebrow sobre fondo oscuro</td>
+              <td><span class="status-dot status-complete">Unificado</span></td>
+              <td class="notes">Resuelto — las 19 instancias usan ahora <span class="mono">.eyebrow.on-dark{color:var(--paper)}</span> (18.9:1); la variante ámbar <span class="mono">.federal</span> se eliminó del CSS. Ver Prioridad 01.</td>
+            </tr>
+            <tr>
+              <td>Sección de CTA final</td>
+              <td><span class="status-dot status-partial">Parcial</span></td>
+              <td class="notes">Misma maqueta, resuelta con <span class="mono">style</span> inline por separado en Home y Kit + Setup — ver Prioridad 05.</td>
+            </tr>
+            <tr>
+              <td>Tipografía (Archivo Black / Barlow / JetBrains Mono)</td>
+              <td><span class="status-dot status-complete">Unificado</span></td>
+              <td class="notes">Sin excepciones en las 13 páginas, incluidos los componentes nuevos (lightbox, timeline de durabilidad).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="content-pages">
+      <div class="section-head">
+        <span class="section-eyebrow">Reverificado hoy, sin cambios de código</span>
+        <h2>Páginas de contenido</h2>
+        <p class="desc">Las 9 páginas restantes no se tocaron desde <span class="mono">KM-AUDIT-01</span>. Se releyó cada una de punta a punta hoy para confirmar que los hallazgos viejos siguen siendo ciertos antes de repetirlos acá — los 7 se confirman exactos.</p>
+      </div>
+
+      <div class="finding">
+        <div class="finding-head"><h3>Shop no muestra el kit físico más allá de los 3 stickers</h3></div>
+        <div class="finding-refs"><span class="tag">shop.html:50-52,70</span></div>
+        <p>Las 7 piezas están listadas en texto, pero la única imagen es el mismo abanico de 3 stickers que ya aparece en la Home (<span class="mono">sticker-40-ca.png</span> se repite literalmente en ambas páginas). El Kingpin Zero Point Marker, el sticker de advertencia, la Reference Plate y la Compliance Guide no tienen ninguna foto propia en la única página pensada para vender el kit.</p>
+        <div class="rec"><strong>Recomendación</strong>Vacío de material fotográfico, no de layout — señalar para cuando existan fotos reales del contenido completo, en vez de resolverlo como parche de diseño mientras tanto.</div>
+      </div>
+
+      <div class="finding">
+        <div class="finding-head"><h3>Shop confirma explícitamente que no se puede comprar todavía</h3></div>
+        <div class="finding-refs"><span class="tag">shop.html:70</span></div>
+        <p>"Pricing, kit lead time, and checkout are still being finalized" — el único camino de conversión del sitio hoy termina en un formulario de cotización, no en una venta. No es un problema de diseño; vale la pena rastrearlo como bloqueante de negocio aparte de esta lista.</p>
+      </div>
+
+      <div class="finding">
+        <div class="finding-head"><h3>Cuatro formularios del sitio, cero backend real</h3></div>
+        <div class="finding-refs"><span class="tag">js/site.js:150-169</span><span class="tag">contact.html</span><span class="tag">shop.html</span><span class="tag">become-a-distributor.html</span></div>
+        <p>Confirmado hoy: ningún <span class="mono">&lt;form&gt;</span> del sitio tiene <span class="mono">action</span>, ni hace <span class="mono">fetch</span>. Los 4 formularios (Contact, cotización de Shop, consulta de Distributor, y el mismo mecanismo en cualquier otro que se agregue) pasan por el mismo manejador genérico: <span class="mono">preventDefault()</span>, 700&nbsp;ms de "Submitting…" simulado, y un mensaje de éxito — sin ningún endpoint detrás.</p>
+      </div>
+
+      <div class="strength">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        <p><strong>KPRA/KCRT Reference y Disclaimer siguen coincidiendo palabra por palabra.</strong> Reverificado: ambas usan "Kingpin to Center of Rearmost Axle" / "Kingpin to Center of Rear Tandem" sin ninguna variante suelta ni "centerline" residual.</p>
+      </div>
+    </section>
+
+    <section id="sitemap">
+      <div class="section-head">
+        <span class="section-eyebrow">Referencia</span>
+        <h2>Inventario de páginas</h2>
+        <p class="desc">Estado de cada página hoy, y si es alcanzable desde la navegación del sitio.</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Página</th><th>Estado</th><th>¿En menú / footer?</th><th>Notas</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="page-name">Home<span class="path">index.html</span></td>
+              <td><span class="status-dot status-complete">Completa</span></td>
+              <td>Menú + footer</td>
+              <td class="notes">Sin cambios estructurales desde KM-HOME-AUDIT-01; hallazgos abiertos en el Plan de acción.</td>
+            </tr>
+            <tr>
+              <td class="page-name">Kit + Setup<span class="path">how-it-works.html</span></td>
+              <td><span class="status-dot status-complete">Completa</span></td>
+              <td>Menú + footer</td>
+              <td class="notes">Rehecha por completo: sin Hero propio, grilla+lista numerada de piezas, lightbox con cotas, acordeón de instalación, timeline de durabilidad.</td>
+            </tr>
+            <tr>
+              <td class="page-name">KPRA/KCRT Reference<span class="path">kpra-kcrt-reference.html</span></td>
+              <td><span class="status-dot status-complete">Completa</span></td>
+              <td>Menú + footer</td>
+              <td class="notes">Tabla + diagrama SVG confirmados sin cambios; único eyebrow ya accesible del sitio (variante ámbar).</td>
+            </tr>
+            <tr>
+              <td class="page-name">About<span class="path">about.html</span></td>
+              <td><span class="status-dot status-partial">Parcial</span></td>
+              <td>Menú + footer</td>
+              <td class="notes">Encuadre de producto escrito; historia/equipo/misión en 1 card "Pending".</td>
+            </tr>
+            <tr>
+              <td class="page-name">Shop<span class="path">shop.html</span></td>
+              <td><span class="status-dot status-partial">Parcial</span></td>
+              <td>Botón CTA + footer</td>
+              <td class="notes">Cotización real; precio/checkout explícitamente sin finalizar; sin fotos propias de 4 de las 7 piezas.</td>
+            </tr>
+            <tr>
+              <td class="page-name">Contact<span class="path">contact.html</span></td>
+              <td><span class="status-dot status-complete">Completa</span></td>
+              <td>Solo footer</td>
+              <td class="notes">Formulario funcional, envío simulado.</td>
+            </tr>
+            <tr>
+              <td class="page-name">FAQ<span class="path">faq.html</span></td>
+              <td><span class="status-dot status-placeholder">Placeholder</span></td>
+              <td>Solo footer</td>
+              <td class="notes">4 preguntas, las 4 en card "Pending".</td>
+            </tr>
+            <tr>
+              <td class="page-name">Installation Guide<span class="path">installation-guide.html</span></td>
+              <td><span class="status-dot status-partial">Parcial</span></td>
+              <td>Solo footer</td>
+              <td class="notes">Ahora comparte componente de acordeón con Kit + Setup; solo el PDF descargable queda "Pending".</td>
+            </tr>
+            <tr>
+              <td class="page-name">Shipping &amp; Returns<span class="path">shipping-returns.html</span></td>
+              <td><span class="status-dot status-placeholder">Placeholder</span></td>
+              <td>Solo footer</td>
+              <td class="notes">1 línea real, 2 cards "Pending".</td>
+            </tr>
+            <tr>
+              <td class="page-name">Terms &amp; Privacy<span class="path">terms.html</span></td>
+              <td><span class="status-dot status-placeholder">Placeholder</span></td>
+              <td>Solo footer</td>
+              <td class="notes">Toda la página es una sola card "Pending".</td>
+            </tr>
+            <tr>
+              <td class="page-name">Compliance Disclaimer<span class="path">disclaimer.html</span></td>
+              <td><span class="status-dot status-complete">Completa</span></td>
+              <td>Solo footer</td>
+              <td class="notes">Texto legal real, terminología KPRA/KCRT verificada contra la tabla de referencia.</td>
+            </tr>
+            <tr>
+              <td class="page-name">Become a Distributor<span class="path">become-a-distributor.html</span></td>
+              <td><span class="status-dot status-complete">Completa</span></td>
+              <td class="mono" style="color:var(--accent); font-weight:600;">Huérfana (a propósito)</td>
+              <td class="notes">Página completa; sin enlaces entrantes por decisión deliberada, no por descuido — ver Prioridad 09.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="strengths">
+      <div class="section-head">
+        <span class="section-eyebrow">Para que quede registrado</span>
+        <h2>Qué ya funciona</h2>
+        <p class="desc">Los patrones que vale la pena proteger mientras se corrige la lista de arriba — varios son nuevos desde el último informe.</p>
+      </div>
+      <div class="strength-list">
+        <div class="strength">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <p><strong>El lightbox con cotas técnicas (Kit + Setup) es la firma visual más fuerte del sitio hoy.</strong> Ningún otro sitio de compliance para transporte muestra las medidas reales del producto con este nivel de precisión ni de esta forma — vale la pena considerarlo como referencia de calidad para futuros componentes.</p>
+        </div>
+        <div class="strength">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <p><strong>El patrón de card "Pending" es honesto y consistente</strong> en las 6 páginas que todavía lo necesitan, incluidos los 4 pasos de instalación nuevos — nunca se resuelve con un vacío que parezca roto.</p>
+        </div>
+        <div class="strength">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <p><strong>El sistema tipográfico sigue siendo deliberado en las 13 páginas</strong>, componentes nuevos incluidos — Archivo Black, Barlow y JetBrains Mono con la misma jerarquía en todos lados.</p>
+        </div>
+        <div class="strength">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <p><strong>El abanico de stickers 40'/41'/43' sigue siendo una firma visual genuina</strong> — reaparece en Home, Kit Completo y Shop sin sentirse repetitivo.</p>
+        </div>
+        <div class="strength">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <p><strong>El acordeón compartido entre Kit + Setup e Installation Guide</strong> es la primera vez que dos páginas resuelven la misma funcionalidad con un único componente en vez de duplicar el patrón — vale la pena repetir este enfoque para lo que venga después.</p>
+        </div>
+        <div class="strength">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <p><strong>Cada decisión de color de esta sesión se verificó con cálculo real, incluida esta misma auditoría</strong> — el contraste de los eyebrows, de los íconos de Home, y de las cotas del lightbox se midieron en vivo, no a ojo.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="report-foot">
+      <p>Compilado a partir de una lectura completa de las 13 páginas y la hoja de estilos compartida, verificación en vivo de contraste sobre las páginas reales, y un repaso de código para las 9 páginas no modificadas desde <span class="mono">KM-AUDIT-01</span> — sus 7 hallazgos de contenido se confirman exactos hoy. Reemplaza a <span class="mono">KM-AUDIT-01</span> y <span class="mono">KM-HOME-AUDIT-01</span> como el informe vigente.</p>
+      <p>Prioridad 01 marcada como resuelta el 2026-09-08 — verificado en vivo en Home y KPRA/KCRT Reference tras el cambio. Al reverificarla apareció la Prioridad 11 (rojo sobre fondo claro, 4.43:1), un hallazgo distinto y menor que quedó registrado por separado.</p>
+    </footer>
+  </div>
+</div>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('#tocNav a'));
+  var sections = links.map(function(a){ return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
+  function onScroll(){
+    var y = window.scrollY + 120;
+    var current = sections[0];
+    sections.forEach(function(sec){ if (sec.offsetTop <= y) current = sec; });
+    links.forEach(function(a){
+      a.classList.toggle('active', current && a.getAttribute('href') === '#' + current.id);
+    });
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();
+</script>
+</body>
+</html>

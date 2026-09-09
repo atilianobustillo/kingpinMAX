@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auditoría del Sitio Kingpin MAX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@500;700;800;900&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F5F6F3; --surface:#FFFFFF; --ink:#14171C; --steel:#57616B; --line:#DDE0DD;
+    --accent:#1F5C6E; --accent-soft:#E4EEF0; --accent-ink:#123642;
+    --critical:#B23A2E; --critical-soft:#F7E7E4;
+    --high:#B5762A; --high-soft:#F6ECDC;
+    --medium:#8A7A2E; --medium-soft:#F2EFDA;
+    --good:#3F7A5C; --good-soft:#E4F0EA;
+    --shadow: 0 1px 2px rgba(20,23,28,0.06), 0 8px 24px -12px rgba(20,23,28,0.18);
+    --font-display:'Libre Franklin', 'Arial Narrow', sans-serif;
+    --font-body:'Public Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-mono:'IBM Plex Mono', "Courier New", monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#14171A; --surface:#1B1F23; --ink:#EDEFEC; --steel:#9BA3A9; --line:#2B3034;
+      --accent:#6FB8CC; --accent-soft:#1E3338; --accent-ink:#D7EFF4;
+      --critical:#E4776A; --critical-soft:#3A2220;
+      --high:#E0A855; --high-soft:#372B18;
+      --medium:#C9B65C; --medium-soft:#332F17;
+      --good:#6FBE95; --good-soft:#1B2E24;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#14171A; --surface:#1B1F23; --ink:#EDEFEC; --steel:#9BA3A9; --line:#2B3034;
+    --accent:#6FB8CC; --accent-soft:#1E3338; --accent-ink:#D7EFF4;
+    --critical:#E4776A; --critical-soft:#3A2220;
+    --high:#E0A855; --high-soft:#372B18;
+    --medium:#C9B65C; --medium-soft:#332F17;
+    --good:#6FBE95; --good-soft:#1B2E24;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--font-body); font-size:16px; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{font-family:var(--font-display); margin:0; text-wrap:balance; color:var(--ink);}
+  p{margin:0;}
+  a{color:var(--accent);}
+  img{max-width:100%;}
+  .mono{font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+
+  .shell{display:grid; grid-template-columns:1fr; max-width:1180px; margin:0 auto; padding:0 24px;}
+  @media(min-width:960px){ .shell{grid-template-columns:240px 1fr; gap:56px; padding:0 40px;} }
+
+  .toc{display:none;}
+  @media(min-width:960px){
+    .toc{
+      display:block; position:sticky; top:32px; align-self:start;
+      padding-top:64px; max-height:calc(100vh - 64px); overflow-y:auto;
+    }
+  }
+  .toc-label{font-family:var(--font-mono); font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--steel); margin-bottom:14px; display:block;}
+  .toc nav{display:flex; flex-direction:column; gap:2px;}
+  .toc a{
+    display:block; text-decoration:none; color:var(--steel); font-size:13.5px; font-weight:500;
+    padding:7px 10px; border-radius:5px; border-left:2px solid transparent;
+  }
+  .toc a:hover{color:var(--ink); background:var(--surface);}
+  .toc a.active{color:var(--accent-ink); border-left-color:var(--accent); background:var(--accent-soft); font-weight:600;}
+
+  .masthead{padding:64px 0 40px; border-bottom:1px solid var(--line);}
+  .masthead-ref{font-family:var(--font-mono); font-size:12px; letter-spacing:0.06em; color:var(--steel); text-transform:uppercase; display:flex; gap:18px; flex-wrap:wrap; margin-bottom:20px;}
+  .masthead-ref span strong{color:var(--ink); font-weight:600;}
+  .masthead h1{font-size:clamp(30px,4.4vw,46px); font-weight:800; line-height:1.05; letter-spacing:-0.01em;}
+  .masthead .dek{margin-top:16px; font-size:17px; color:var(--steel); max-width:62ch; line-height:1.6;}
+  .scope-grid{display:grid; grid-template-columns:1fr; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:8px; margin-top:32px; overflow:hidden;}
+  @media(min-width:640px){ .scope-grid{grid-template-columns:repeat(4,1fr);} }
+  .scope-cell{background:var(--surface); padding:16px 18px;}
+  .scope-cell .num{font-family:var(--font-mono); font-size:24px; font-weight:600; color:var(--ink);}
+  .scope-cell .cap{font-size:12px; color:var(--steel); margin-top:4px;}
+
+  section{padding:56px 0;}
+  .section-head{margin-bottom:32px;}
+  .section-eyebrow{font-family:var(--font-mono); font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:var(--accent); display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+  .section-eyebrow::before{content:""; width:20px; height:2px; background:var(--accent); display:inline-block;}
+  .section-head h2{font-size:clamp(22px,3vw,30px); font-weight:800;}
+  .section-head .desc{margin-top:10px; color:var(--steel); font-size:15px; max-width:70ch;}
+
+  .plan-list{display:flex; flex-direction:column; gap:14px;}
+  .plan-item{
+    display:grid; grid-template-columns:auto 1fr; gap:18px;
+    background:var(--surface); border:1px solid var(--line); border-radius:8px;
+    padding:20px 22px; box-shadow:var(--shadow);
+  }
+  .plan-rank{font-family:var(--font-mono); font-size:22px; font-weight:600; color:var(--line); line-height:1; padding-top:2px;}
+  .plan-item.sev-critical .plan-rank{color:var(--critical);}
+  .plan-item.sev-high .plan-rank{color:var(--high);}
+  .plan-item.sev-medium .plan-rank{color:var(--medium);}
+  .plan-item.sev-good .plan-rank{color:var(--good);}
+  .plan-item.sev-good{opacity:0.82;}
+  .plan-body h3{font-size:16.5px; font-weight:700; line-height:1.35;}
+  .plan-meta{display:flex; align-items:center; gap:10px; margin-top:8px; flex-wrap:wrap;}
+  .plan-body p{margin-top:8px; font-size:14.5px; color:var(--steel); line-height:1.6;}
+
+  .chip{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:var(--font-mono); font-size:10.5px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase;
+    padding:4px 9px 4px 8px; border-radius:4px; border-left:3px solid; color:var(--ink);
+  }
+  .chip.sev-critical{background:var(--critical-soft); border-color:var(--critical);}
+  .chip.sev-high{background:var(--high-soft); border-color:var(--high);}
+  .chip.sev-medium{background:var(--medium-soft); border-color:var(--medium);}
+  .chip.sev-good{background:var(--good-soft); border-color:var(--good);}
+  .tag{font-family:var(--font-mono); font-size:11px; color:var(--steel); background:var(--paper); border:1px solid var(--line); padding:3px 8px; border-radius:4px;}
+
+  .finding{
+    background:var(--surface); border:1px solid var(--line); border-radius:8px;
+    padding:22px 24px; margin-bottom:16px; box-shadow:var(--shadow);
+  }
+  .finding-head{display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap;}
+  .finding-head h3{font-size:16px; font-weight:700; max-width:60ch;}
+  .finding-refs{margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;}
+  .finding p{margin-top:12px; font-size:14.5px; color:var(--steel); line-height:1.65; max-width:74ch;}
+  .finding p strong{color:var(--ink); font-weight:600;}
+  .finding .rec{
+    margin-top:14px; padding:12px 14px; background:var(--accent-soft); border-radius:6px;
+    font-size:14px; color:var(--accent-ink); line-height:1.55;
+  }
+  .finding .rec strong{font-family:var(--font-mono); font-size:11px; letter-spacing:0.05em; text-transform:uppercase; display:block; margin-bottom:4px; color:var(--accent-ink);}
+
+  .strength-list{display:flex; flex-direction:column; gap:10px;}
+  .strength{
+    display:flex; gap:12px; align-items:flex-start; background:var(--surface); border:1px solid var(--line);
+    border-left:3px solid var(--good); border-radius:6px; padding:14px 16px;
+  }
+  .strength svg{flex:none; margin-top:2px; color:var(--good);}
+  .strength p{font-size:14.5px; color:var(--steel); line-height:1.55;}
+  .strength p strong{color:var(--ink);}
+
+  .table-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:8px; background:var(--surface); box-shadow:var(--shadow);}
+  table{width:100%; border-collapse:collapse; min-width:640px;}
+  thead th{
+    text-align:left; font-family:var(--font-mono); font-size:10.5px; letter-spacing:0.06em; text-transform:uppercase;
+    color:var(--steel); padding:12px 16px; border-bottom:1px solid var(--line); white-space:nowrap;
+  }
+  tbody td{padding:13px 16px; border-bottom:1px solid var(--line); font-size:14px; vertical-align:top;}
+  tbody tr:last-child td{border-bottom:none;}
+  td.page-name{font-weight:600; white-space:nowrap;}
+  td.page-name .path{display:block; font-family:var(--font-mono); font-size:11.5px; color:var(--steel); font-weight:400; margin-top:2px;}
+  td.notes{color:var(--steel); font-size:13.5px; line-height:1.5;}
+
+  .status-dot{display:inline-flex; align-items:center; gap:7px; font-size:13px; font-weight:600; white-space:nowrap;}
+  .status-dot::before{content:""; width:8px; height:8px; border-radius:50%; display:inline-block;}
+  .status-complete::before{background:var(--good);}
+  .status-partial::before{background:var(--high);}
+  .status-placeholder::before{background:var(--critical);}
+
+  footer.report-foot{padding:48px 0 80px; border-top:1px solid var(--line); margin-top:24px;}
+  footer.report-foot p{font-size:13px; color:var(--steel); max-width:60ch; line-height:1.6;}
+
+  @media(prefers-reduced-motion: reduce){ *{scroll-behavior:auto !important;} }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <aside class="toc">
+    <span class="toc-label">En este informe</span>
+    <nav id="tocNav">
+      <a href="#plan">Plan de acción prioritario</a>
+      <a href="#design">Diseño visual y coherencia</a>
+      <a href="#usability">Usabilidad</a>
+      <a href="#legibility">Legibilidad y contraste</a>
+      <a href="#content">Contenido y estructura</a>
+      <a href="#sitemap">Inventario de páginas</a>
+      <a href="#strengths">Qué ya funciona</a>
+    </nav>
+  </aside>
+
+  <div>
+    <header class="masthead">
+      <div class="masthead-ref">
+        <span>INFORME <strong class="mono">KM-AUDIT-01</strong></span>
+        <span>FECHA <strong class="mono">2026-09-02</strong></span>
+        <span>ALCANCE <strong>12 páginas, sitio completo</strong></span>
+      </div>
+      <h1>Kingpin MAX — Auditoría de Diseño del Sitio</h1>
+      <p class="dek">Un repaso completo por cada página — diseño visual, consistencia entre páginas, usabilidad, legibilidad y estructura de contenido — que cierra con una sola lista ordenada de qué corregir primero y por qué está en ese orden.</p>
+      <div class="scope-grid">
+        <div class="scope-cell"><div class="num mono">12</div><div class="cap">Páginas revisadas</div></div>
+        <div class="scope-cell"><div class="num mono">3</div><div class="cap">Páginas aún de relleno</div></div>
+        <div class="scope-cell"><div class="num mono">4</div><div class="cap">Puntos de acción abiertos <span style="color:var(--good);">(4 resueltos)</span></div></div>
+        <div class="scope-cell"><div class="num mono">1</div><div class="cap">Página huérfana</div></div>
+      </div>
+    </header>
+
+    <section id="plan">
+      <div class="section-head">
+        <span class="section-eyebrow">Empezar por acá</span>
+        <h2>Plan de acción prioritario</h2>
+        <p class="desc">Ordenado por impacto real — cuánto lo nota de verdad un visitante — no por lo fácil que sea cada corrección. Los tres vacíos de contenido de arriba superan en prioridad a cualquier inconsistencia visual de más abajo, porque son los que hacen que el sitio falle en su función a mitad de la visita.</p>
+      </div>
+
+      <div class="plan-list">
+        <div class="plan-item sev-high">
+          <div class="plan-rank mono">01</div>
+          <div class="plan-body">
+            <h3>Integrar las tres páginas en cuanto su contenido esté redactado</h3>
+            <div class="plan-meta"><span class="chip sev-high">Alto</span><span class="tag">Contenido · En progreso</span></div>
+            <p>Contexto confirmado por el cliente: el contenido de <strong>FAQ, Terms &amp; Privacy y Shipping &amp; Returns</strong> ya se está redactando aparte — el estado "Pending" en estas tres páginas es honesto sobre dónde está el trabajo hoy, no un vacío sin explicación. Sigue siendo el punto de más impacto para un visitante en cuanto el contenido esté listo (choca con esa pared justo cuando está decidiendo si pedir una cotización), así que conviene tenerlo como el próximo ítem a integrar apenas llegue el texto — no como una alarma de diseño.</p>
+          </div>
+        </div>
+
+        <div class="plan-item sev-good">
+          <div class="plan-rank mono">02</div>
+          <div class="plan-body">
+            <h3>Unificar la definición de KPRA/KCRT entre páginas <span class="mono" style="color:var(--good); font-size:12px;">— RESUELTO</span></h3>
+            <div class="plan-meta"><span class="chip sev-good">Resuelto</span><span class="tag">Legibilidad · Precisión</span></div>
+            <p>Verificado en el código: las 10 apariciones de la definición en <span class="mono">disclaimer.html</span>, <span class="mono">how-it-works.html</span> y <span class="mono">kpra-kcrt-reference.html</span> dicen ahora "Kingpin to Center of Rearmost Axle" / "Kingpin to Center of Rear Tandem", sin variantes sueltas ni el antiguo "centerline". La página legal y la tabla de referencia ya coinciden palabra por palabra.</p>
+          </div>
+        </div>
+
+        <div class="plan-item sev-good">
+          <div class="plan-rank mono">03</div>
+          <div class="plan-body">
+            <h3>Consolidar el componente de "card" en un sistema de 2 variantes <span class="mono" style="color:var(--good); font-size:12px;">— RESUELTO</span></h3>
+            <div class="plan-meta"><span class="chip sev-good">Resuelto</span><span class="tag">Coherencia de diseño</span></div>
+            <p>Las 5 recetas se consolidaron en dos clases base compartidas: <span class="mono">.card-dark</span> (fondo sólido <span class="mono">#15181d</span>, para compliance-card/kpl-card/kit-card) y <span class="mono">.card-light</span> (fondo blanco, para quote/ps-card/product) — mismo radio de esquina (8px) y mismo mecanismo de acento (<span class="mono">.card-accent</span>, borde de 4px siempre a la izquierda, con modificador <span class="mono">.card-accent-amber</span> para el aviso KPL). De paso se sacó el <span class="mono">backdrop-filter: blur</span> de compliance-card, que ya no cumplía función alguna desde que la tabla dejó de estar sobre una foto.</p>
+          </div>
+        </div>
+
+        <div class="plan-item sev-good">
+          <div class="plan-rank mono">04</div>
+          <div class="plan-body">
+            <h3>Romper la racha de secciones oscuras del Home <span class="mono" style="color:var(--good); font-size:12px;">— RESUELTO</span></h3>
+            <div class="plan-meta"><span class="chip sev-good">Resuelto</span><span class="tag">Diseño · Ritmo</span></div>
+            <p>Kit Completo pasó a fondo claro (<span class="mono">var(--paper-alt)</span>), con las dos tarjetas de la sección quedando oscuras adrede — flotan sobre el fondo claro y por fin se les nota la sombra que ya tenían pero no se veía sobre fondo oscuro. Se descartó aclarar Cobertura porque tiene foto de fondo con scrim, más trabajo por poco beneficio adicional. Ritmo final: Hero(oscuro) → Kit Completo(claro) → Cobertura(oscuro) → Reviews(claro) → Partner/CTA/Footer(oscuro) — dos respiros en vez de uno.</p>
+          </div>
+        </div>
+
+        <div class="plan-item sev-good">
+          <div class="plan-rank mono">05</div>
+          <div class="plan-body">
+            <h3>Cerrar la brecha de estilo de íconos <span class="mono" style="color:var(--good); font-size:12px;">— RESUELTO</span></h3>
+            <div class="plan-meta"><span class="chip sev-good">Resuelto</span><span class="tag">Coherencia de diseño</span></div>
+            <p>Los ~13 usos de ícono en Home y Kit + Setup (hero-meta, badges, las 7 piezas del kit, los 3 pasos de instalación, y los 3 íconos del aviso KPL) pasaron de SVG de línea fina a ilustraciones PNG con el mismo degradado gris que ya tenían las dos tarjetas de referencia — 9 formas nuevas dibujadas a medida, más el check extraído directamente de <span class="mono">shield-check.png</span> para garantizar que combine exacto. El verde del check original también se recoloreó a rojo de marca, ya que era el único uso de verde en todo el sitio.</p>
+          </div>
+        </div>
+
+        <div class="plan-item sev-medium">
+          <div class="plan-rank mono">06</div>
+          <div class="plan-body">
+            <h3>Darle a "Become a Distributor" un lugar real en la navegación</h3>
+            <div class="plan-meta"><span class="chip sev-medium">Medio</span><span class="tag">Usabilidad · Estructura</span></div>
+            <p>La página está completamente construida — hero, detalles del programa, formulario de contacto funcional — pero no tiene ni un solo enlace desde el menú principal ni desde el mapa del footer. Solo se llega a través del banner de Partner With Us en el Home. Cualquiera que comparta o guarde el link directo no tiene forma de volver a encontrarla desde ningún otro lugar del sitio.</p>
+          </div>
+        </div>
+
+        <div class="plan-item sev-medium">
+          <div class="plan-rank mono">07</div>
+          <div class="plan-body">
+            <h3>Resolver el hueco abierto de la "Sección 6" en el Home</h3>
+            <div class="plan-meta"><span class="chip sev-medium">Medio</span><span class="tag">Contenido · Estructura</span></div>
+            <p>La convención de secciones numeradas que definimos para el Home tiene un hueco en la posición 6 (reservada originalmente para un bloque rápido de FAQ) que nunca se llenó. O se construye una vez que la Prioridad 01 le dé respuestas reales para mostrar, o se elimina formalmente ese lugar para que deje de leerse como algo inconcluso.</p>
+          </div>
+        </div>
+
+        <div class="plan-item sev-medium">
+          <div class="plan-rank mono">08</div>
+          <div class="plan-body">
+            <h3>Marcar Shop como todavía no listo para transaccionar</h3>
+            <div class="plan-meta"><span class="chip sev-medium">Medio</span><span class="tag">Preparación del negocio</span></div>
+            <p>No es un defecto de diseño — la página Shop y su formulario "Request My Kit Quote" están bien resueltos. Pero el precio y el checkout dicen explícitamente "still being finalized", lo que significa que el único camino de conversión del sitio termina en un formulario de contacto, no en una venta. Vale la pena rastrearlo como bloqueante de lanzamiento, aparte de la lista de diseño de arriba.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="design">
+      <div class="section-head">
+        <span class="section-eyebrow">01 — Diseño visual</span>
+        <h2>Diseño y coherencia entre páginas</h2>
+        <p class="desc">Tomados de a uno, la mayoría de los componentes están bien resueltos. Las grietas aparecen entre ellos — cuando el mismo tipo de elemento se resuelve de una forma distinta cada vez que reaparece.</p>
+      </div>
+
+      <div class="strength">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        <p><strong>Resuelto — las 5 recetas de "card" distintas.</strong> <span class="mono">.compliance-card</span>, <span class="mono">.kpl-card</span>, <span class="mono">.kit-card</span>, <span class="mono">.quote</span> y <span class="mono">.ps-card</span>/<span class="mono">.product</span> ahora comparten dos clases base (<span class="mono">.card-dark</span> / <span class="mono">.card-light</span>) con el mismo radio de esquina y el mismo mecanismo de borde de acento (siempre a la izquierda, vía <span class="mono">.card-accent</span>). También se sacó el <span class="mono">backdrop-filter: blur</span> de la tabla KPRA/KCRT, que ya no tenía nada detrás que difuminar.</p>
+      </div>
+
+      <div class="finding">
+        <div class="finding-head">
+          <h3>Un solo rojo de marca ya unificado — queda señalar la excepción local restante</h3>
+        </div>
+        <div class="finding-refs"><span class="tag">--red: #E62B27</span><span class="tag">css/style.css</span></div>
+        <p>Este ya quedó resuelto, vale la pena dejarlo asentado: el sitio corría con tres rojos distintos (<span class="mono">#E2231A</span>, <span class="mono">#FF3B30</span> y un <span class="mono">#E0342B</span> sin gobernar) repartidos entre botones, hovers y texto de acento. Los tres son ahora el mismo token <span class="mono">--red</span>. La única excepción que queda es intencional — el diagrama KPRA/KCRT usa un ámbar aclarado localmente (<span class="mono">#FFE0A0</span>) porque el fondo de esa card es más claro que el resto de las secciones oscuras del sitio, y el token <span class="mono">--amber</span> estándar no llega a 4.5:1 de contraste ahí.</p>
+      </div>
+
+      <div class="strength">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        <p><strong>Resuelto — los dos lenguajes de ícono se unificaron.</strong> Los ~13 usos restantes (badges, piezas del kit, pasos de instalación, aviso KPL) pasaron de SVG de línea a ilustraciones PNG con degradado gris, dibujadas a medida sobre la misma geometría que ya usaban los íconos de línea originales. <span class="mono">icons/</span> ahora tiene 9 formas nuevas + el check extraído de <span class="mono">shield-check.png</span>.</p>
+      </div>
+
+      <div class="strength">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        <p><strong>Resuelto — el Home ya no es oscuro 7 de 8 secciones.</strong> Kit Completo pasó a <span class="mono">--paper-alt</span>, con sus dos tarjetas quedando oscuras a propósito como acento sobre el fondo claro. Ritmo actual: Hero → <strong>Kit Completo (claro)</strong> → Cobertura → Reviews (claro) → Partner/CTA/Footer.</p>
+      </div>
+    </section>
+
+    <section id="usability">
+      <div class="section-head">
+        <span class="section-eyebrow">02 — Usabilidad</span>
+        <h2>Usabilidad</h2>
+        <p class="desc">¿Puede un visitante hacer realmente lo que la página le pide, sin fricción que no debería tener que atravesar?</p>
+      </div>
+
+      <div class="finding">
+        <div class="finding-head"><h3>"Become a Distributor" no tiene forma de volver a ella</h3></div>
+        <div class="finding-refs"><span class="tag">become-a-distributor.html</span></div>
+        <p>Página completa — hero, detalles del programa, lista "Who this is for", formulario de contacto funcional — pero no existe ni un solo enlace hacia ella en el menú principal ni en las columnas Site/Support/Legal del footer. La única entrada es el banner de Partner With Us en el Home. Cualquiera que navegue a otra página, o llegue por un link compartido y después siga navegando, no tiene forma de volver salvo reencontrar ese único banner.</p>
+        <div class="rec"><strong>Recomendación</strong>Sumarla como mínimo a la columna Site del footer — no necesita el peso del menú principal, pero sí necesita existir en el mapa del sitio.</div>
+      </div>
+
+      <div class="finding">
+        <div class="finding-head"><h3>Cuatro formularios, cero backend real — esperable antes del lanzamiento, vale la pena rastrearlo</h3></div>
+        <div class="finding-refs"><span class="tag">js/site.js</span><span class="tag">contact.html</span><span class="tag">shop.html</span><span class="tag">become-a-distributor.html</span></div>
+        <p>Contact, el pedido de cotización de Shop y el formulario de consulta de Distributor se envían los tres a través del mismo manejador genérico — un delay simulado de 700ms y un mensaje de éxito, sin ningún endpoint real detrás. Razonable para una construcción previa al lanzamiento, pero significa que hoy ningún camino de captura de leads del sitio llega a ningún lado.</p>
+      </div>
+
+      <div class="finding">
+        <div class="finding-head"><h3>Header, menú y hamburguesa en móvil — sólidos, sin problemas abiertos</h3></div>
+        <div class="finding-refs"><span class="tag">header</span><span class="tag">.nav-toggle</span></div>
+        <p>Lo menciono acá porque fue el tema con más iteraciones de esta sesión (tamaño del logo, márgenes de borde, el botón "Get Your Kit" oculto por debajo de 900px) y el resultado se sostiene: 44×44px de área táctil en el toggle, apilamiento z-index correcto contra el menú móvil abierto, sin superposiciones en ningún ancho probado.</p>
+      </div>
+    </section>
+
+    <section id="legibility">
+      <div class="section-head">
+        <span class="section-eyebrow">03 — Legibilidad</span>
+        <h2>Legibilidad y contraste</h2>
+        <p class="desc">Verificado contra WCAG AA (4.5:1 para texto de cuerpo, 3:1 para texto grande/negrita) en vez de a ojo — el mismo estándar que se aplicó a cada decisión de color anterior en este proyecto.</p>
+      </div>
+
+      <div class="strength-list" style="margin-bottom:24px;">
+        <div class="strength">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <p><strong>El texto de cuerpo sobre blanco pasa con margen.</strong> <span class="mono">--steel (#6B6E70)</span>, usado en casi todos los párrafos apagados sobre fondo claro en todo el sitio, mide 5.1:1 sobre blanco y 4.7:1 sobre <span class="mono">--paper-alt</span> — ambos superan AA con comodidad.</p>
+        </div>
+        <div class="strength">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <p><strong>La card del diagrama KPRA/KCRT se reverificó después de aclarar su fondo dos veces</strong> — cada etiqueta, el subtítulo y el texto de las líneas de cota se volvieron a elegir para superar 4.5:1+ contra el punto más claro del nuevo degradado, no solo contra el más oscuro.</p>
+        </div>
+        <div class="strength">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <p><strong>Resuelto — la deriva de terminología entre páginas.</strong> <span class="mono">disclaimer.html</span>, <span class="mono">how-it-works.html</span> y <span class="mono">kpra-kcrt-reference.html</span> usaban tres formulaciones ligeramente distintas de KPRA/KCRT (incluyendo un "centerline" suelto). Las tres páginas quedaron unificadas en "Kingpin to Center of Rearmost Axle" / "Kingpin to Center of Rear Tandem", verificado línea por línea.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="content">
+      <div class="section-head">
+        <span class="section-eyebrow">04 — Contenido y arquitectura de información</span>
+        <h2>Foco de contenido y orden de páginas</h2>
+        <p class="desc">Dónde invertir primero el esfuerzo de redacción, y cómo debería cambiar la estructura del propio sitio para acompañarlo.</p>
+      </div>
+
+      <div class="finding">
+        <div class="finding-head"><h3>Corregir el FAQ antes que Terms — por posición en el embudo, no por orden alfabético</h3></div>
+        <div class="finding-refs"><span class="tag">faq.html</span><span class="tag">terms.html</span><span class="tag">shipping-returns.html</span></div>
+        <p>Las tres páginas de relleno van a necesitar contenido real eventualmente, pero no pesan lo mismo. El FAQ es donde un comprador que está evaluando va a resolver dudas <em>antes</em> de pedir una cotización — ahora mismo no resuelve nada y señala activamente que el producto no está listo. Terms casi siempre lo lee solo alguien que ya está en el checkout, y todavía no hay checkout en vivo. Shipping &amp; Returns queda en el medio — importa cuando un fleet manager está comparando proveedores, menos en una primera visita.</p>
+        <div class="rec"><strong>Recomendación</strong>Prioridad de contenido: respuestas reales del FAQ primero (hasta 3 bien resueltas superan a 4 cards "pending"), Shipping &amp; Returns segundo, Terms al final — puede quedar como placeholder hasta que el checkout se esté construyendo de verdad.</div>
+      </div>
+
+      <div class="finding">
+        <div class="finding-head"><h3>Nada en Shop muestra el kit físico más allá de los tres stickers</h3></div>
+        <div class="finding-refs"><span class="tag">shop.html</span></div>
+        <p>La página lista correctamente las siete piezas del kit (los tres stickers de distancia, el marcador Zero Point, el sticker de advertencia de pin-engagement, la Reference Plate, la Compliance Guide) pero visualmente solo se muestra el abanico de stickers — la misma imagen que ya se usa en el Home. Un comprador en la única página pensada para vender el kit ve la misma foto que vio en la portada, con cuatro de las siete piezas descritas solo en texto.</p>
+        <div class="rec"><strong>Recomendación</strong>Esto es un vacío de fotografía/material, no de layout — señalarlo para cuando haya fotos reales del contenido completo del kit, en vez de resolverlo como un fix de diseño mientras tanto.</div>
+      </div>
+
+      <div class="finding">
+        <div class="finding-head"><h3>"Get Your Kit" aparece como CTA en tres registros distintos</h3></div>
+        <div class="finding-refs"><span class="tag">nav-right .btn</span><span class="tag">.hero-actions</span><span class="tag">Secciones de Footer / CTA</span></div>
+        <p>No lo marco como un problema — repetir el CTA es normal en una página de captura de leads — pero vale la pena nombrarlo: el botón fijo del menú, el botón propio del hero, y el CTA de cierre de página dicen todos alguna variante de "Get Your Kit" / "Go To Shop". Está bien así tal cual; solo valdría la pena revisarlo si más adelante el análisis de datos muestra que los visitantes no tienen claro cuál es "la" acción.</p>
+      </div>
+    </section>
+
+    <section id="sitemap">
+      <div class="section-head">
+        <span class="section-eyebrow">Referencia</span>
+        <h2>Inventario de páginas</h2>
+        <p class="desc">Cada página del sitio, su estado de contenido, y qué todavía necesita atención.</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Página</th><th>Estado</th><th>¿En menú / footer?</th><th>Notas</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="page-name">Home<span class="path">index.html</span></td>
+              <td><span class="status-dot status-complete">Completa</span></td>
+              <td>Menú + footer</td>
+              <td class="notes">Estructura de 9 secciones, la página reconstruida más recientemente del sitio. Ritmo de secciones oscuras señalado arriba.</td>
+            </tr>
+            <tr>
+              <td class="page-name">Kit + Setup<span class="path">how-it-works.html</span></td>
+              <td><span class="status-dot status-complete">Completa</span></td>
+              <td>Menú + footer</td>
+              <td class="notes">Incluye el aviso de verificación KPL como sección propia.</td>
+            </tr>
+            <tr>
+              <td class="page-name">KPRA/KCRT Reference<span class="path">kpra-kcrt-reference.html</span></td>
+              <td><span class="status-dot status-complete">Completa</span></td>
+              <td>Menú + footer</td>
+              <td class="notes">Recién reconstruida — tabla en grilla + diagrama real del trailer, ambos reverificados por contraste.</td>
+            </tr>
+            <tr>
+              <td class="page-name">About<span class="path">about.html</span></td>
+              <td><span class="status-dot status-partial">Parcial</span></td>
+              <td>Menú + footer</td>
+              <td class="notes">El encuadre del producto está escrito; historia de la empresa, equipo y misión son una card "Pending" abierta.</td>
+            </tr>
+            <tr>
+              <td class="page-name">Shop<span class="path">shop.html</span></td>
+              <td><span class="status-dot status-partial">Parcial</span></td>
+              <td>Botón CTA + footer</td>
+              <td class="notes">Descripción del kit y formulario de cotización son reales; precio y checkout explícitamente sin finalizar.</td>
+            </tr>
+            <tr>
+              <td class="page-name">Contact<span class="path">contact.html</span></td>
+              <td><span class="status-dot status-complete">Completa</span></td>
+              <td>Solo footer</td>
+              <td class="notes">Patrón de formulario funcional (envío simulado, todavía sin backend).</td>
+            </tr>
+            <tr>
+              <td class="page-name">FAQ<span class="path">faq.html</span></td>
+              <td><span class="status-dot status-placeholder">Placeholder</span></td>
+              <td>Solo footer</td>
+              <td class="notes">Las 4 preguntas son cards "Pending" — todavía ninguna respondida.</td>
+            </tr>
+            <tr>
+              <td class="page-name">Installation Guide<span class="path">installation-guide.html</span></td>
+              <td><span class="status-dot status-partial">Parcial</span></td>
+              <td>Solo footer</td>
+              <td class="notes">Resumen real de 3 pasos; solo el PDF descargable está marcado como pendiente.</td>
+            </tr>
+            <tr>
+              <td class="page-name">Shipping &amp; Returns<span class="path">shipping-returns.html</span></td>
+              <td><span class="status-dot status-placeholder">Placeholder</span></td>
+              <td>Solo footer</td>
+              <td class="notes">Una línea de texto real; tanto transportistas/plazos como la política de devoluciones están pendientes.</td>
+            </tr>
+            <tr>
+              <td class="page-name">Terms &amp; Privacy<span class="path">terms.html</span></td>
+              <td><span class="status-dot status-placeholder">Placeholder</span></td>
+              <td>Solo footer</td>
+              <td class="notes">Es enteramente una sola card "Pending".</td>
+            </tr>
+            <tr>
+              <td class="page-name">Compliance Disclaimer<span class="path">disclaimer.html</span></td>
+              <td><span class="status-dot status-complete">Completa</span></td>
+              <td>Solo footer</td>
+              <td class="notes">Texto legal real — su redacción de KPRA/KCRT ya coincide con la tabla de referencia (Prioridad 02, resuelto).</td>
+            </tr>
+            <tr>
+              <td class="page-name">Become a Distributor<span class="path">become-a-distributor.html</span></td>
+              <td><span class="status-dot status-complete">Completa</span></td>
+              <td class="mono" style="color:var(--critical); font-weight:600;">Sin enlazar</td>
+              <td class="notes">Página completamente construida sin ninguna forma de descubrirla desde menú o footer — ver Prioridad 06.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="strengths">
+      <div class="section-head">
+        <span class="section-eyebrow">Para que quede registrado</span>
+        <h2>Qué ya funciona</h2>
+        <p class="desc">Una crítica que solo enumera problemas es un mal mapa — estos son los patrones que vale la pena proteger mientras se corrige todo lo de arriba.</p>
+      </div>
+      <div class="strength-list">
+        <div class="strength">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <p><strong>El patrón de card "Pending" es honesto y consistente.</strong> Cada sección sin terminar — la bio del equipo en About, las respuestas del FAQ, la política de Shipping — usa la misma etiqueta visible en vez de un espacio en blanco que parece roto o contenido inventado. El problema es el volumen de contenido que todavía falta detrás de esa etiqueta, no el patrón en sí.</p>
+        </div>
+        <div class="strength">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <p><strong>El sistema tipográfico se lee como deliberado.</strong> Archivo Black para titulares y eyebrows, Barlow para el cuerpo de texto, JetBrains Mono para números y etiquetas técnicas — usado de forma consistente en las 12 páginas, y le da al sitio un carácter industrial/técnico que encaja con un producto de compliance.</p>
+        </div>
+        <div class="strength">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <p><strong>El abanico de stickers 40'/41'/43' es una firma visual genuina.</strong> Reaparece en el hero del Home, en la sección Kit Completo y en Shop sin sentirse repetitivo — es la imagen por la que un visitante va a recordar la marca.</p>
+        </div>
+        <div class="strength">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <p><strong>Cada decisión de color de este proyecto se verificó con cálculo, no a ojo</strong> — el logo del header, el aviso KPL y la reconstrucción del diagrama se comprobaron todos contra la matemática de contraste de WCAG antes de publicarse. Vale la pena mantener esa disciplina en las correcciones que quedan pendientes arriba.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="report-foot">
+      <p>Compilado a partir de una lectura completa de las 12 páginas HTML y la hoja de estilos compartida, más un repaso en vivo sobre las páginas Home, Kit + Setup y KPRA/KCRT Reference. Avisame cuando las Prioridades 01–02 estén listas para una revisión de seguimiento.</p>
+    </footer>
+  </div>
+</div>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('#tocNav a'));
+  var sections = links.map(function(a){ return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
+  function onScroll(){
+    var y = window.scrollY + 120;
+    var current = sections[0];
+    sections.forEach(function(sec){ if (sec.offsetTop <= y) current = sec; });
+    links.forEach(function(a){
+      a.classList.toggle('active', current && a.getAttribute('href') === '#' + current.id);
+    });
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();
+</script>
+</body>
+</html>

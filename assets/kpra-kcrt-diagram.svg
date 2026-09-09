@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" role="img" aria-label="Diagram showing that KPRA and KCRT are measured from the same kingpin point on a trailer but end at two different points: KPRA reaches the centerline of the rearmost axle, while KCRT stops at the midpoint between the two tandem axles, a few feet short of KPRA.">
+  <title>KPRA vs KCRT</title>
+  <desc>Side view of a trailer. Both measurements start at the kingpin. KPRA (solid line) runs to the centerline of the rearmost axle. KCRT (dashed line) runs only to the midpoint between the two tandem axles, ending short of KPRA.</desc>
+
+  <defs>
+    <marker id="dimArrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#f4b942" />
+    </marker>
+  </defs>
+
+  <!-- card background -->
+  <rect x="0" y="0" width="1000" height="600" rx="18" fill="#15181d" />
+
+  <!-- header -->
+  <text x="40" y="52" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="26" fill="#f2f2f2">KPRA vs KCRT</text>
+  <text x="40" y="78" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#9aa0a8">Two reference points on the same trailer</text>
+
+  <!-- ground line -->
+  <line x1="40" y1="344" x2="960" y2="344" stroke="#2a2e35" stroke-width="2" />
+
+  <!-- trailer body -->
+  <rect x="90" y="210" width="760" height="90" rx="8" fill="none" stroke="#d7dade" stroke-width="3" />
+
+  <!-- tandem wheels -->
+  <circle cx="690" cy="323" r="21" fill="#2a2e35" stroke="#6b7076" stroke-width="2" />
+  <circle cx="690" cy="323" r="7" fill="#d7dade" />
+  <circle cx="780" cy="323" r="21" fill="#2a2e35" stroke="#6b7076" stroke-width="2" />
+  <circle cx="780" cy="323" r="7" fill="#d7dade" />
+
+  <!-- reference points on the trailer underside -->
+  <circle cx="150" cy="300" r="8" fill="#f4b942" stroke="#15181d" stroke-width="2" />
+  <circle cx="735" cy="300" r="7" fill="#f4b942" stroke="#15181d" stroke-width="2" />
+  <circle cx="780" cy="300" r="7" fill="#f4b942" stroke="#15181d" stroke-width="2" />
+
+  <!-- kingpin label -->
+  <text x="168" y="318" font-family="Arial, Helvetica, sans-serif" font-size="12" fill="#d7dade">KINGPIN</text>
+
+  <!-- extension lines -->
+  <line x1="150" y1="300" x2="150" y2="524" stroke="#4b4f56" stroke-width="1.5" stroke-dasharray="4,3" />
+  <line x1="735" y1="300" x2="735" y2="464" stroke="#4b4f56" stroke-width="1.5" stroke-dasharray="4,3" />
+  <line x1="780" y1="300" x2="780" y2="524" stroke="#4b4f56" stroke-width="1.5" stroke-dasharray="4,3" />
+
+  <!-- KCRT dimension line (dashed, shorter — ends at tandem center) -->
+  <line x1="150" y1="460" x2="735" y2="460" stroke="#f4b942" stroke-width="2.5" stroke-dasharray="9,6" marker-start="url(#dimArrow)" marker-end="url(#dimArrow)" />
+  <text x="442" y="446" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="17" fill="#f4b942">KCRT</text>
+
+  <!-- KPRA dimension line (solid, longer — ends at rearmost axle) -->
+  <line x1="150" y1="520" x2="780" y2="520" stroke="#f4b942" stroke-width="2.5" marker-start="url(#dimArrow)" marker-end="url(#dimArrow)" />
+  <text x="465" y="506" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="17" fill="#f4b942">KPRA</text>
+
+  <!-- legend -->
+  <line x1="40" y1="558" x2="70" y2="558" stroke="#f4b942" stroke-width="2.5" />
+  <text x="80" y="562" font-family="Courier New, monospace" font-size="13" fill="#d7dade">KPRA — Kingpin to Rearmost Axle</text>
+
+  <line x1="40" y1="580" x2="70" y2="580" stroke="#f4b942" stroke-width="2.5" stroke-dasharray="6,4" />
+  <text x="80" y="584" font-family="Courier New, monospace" font-size="13" fill="#d7dade">KCRT — Kingpin to Center of Rear Tandem</text>
+</svg>
