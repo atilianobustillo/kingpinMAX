@@ -138,13 +138,13 @@ header{position:sticky;top:0;z-index:40;background:var(--ink);border-bottom:2px 
 .hero-photo::after{
   content:"";position:absolute;inset:0;
   background-image:linear-gradient(115deg,
-    transparent 0%, transparent 30%,
-    rgba(255,255,255,0.10) 42%,
-    rgba(255,255,255,0.28) 50%,
-    rgba(255,255,255,0.10) 58%,
-    transparent 70%, transparent 100%);
+    transparent 0%, transparent 26%,
+    rgba(255,255,255,0.06) 38%,
+    rgba(255,255,255,0.30) 50%,
+    rgba(255,255,255,0.06) 62%,
+    transparent 74%, transparent 100%);
   background-size:320% 320%;
-  mix-blend-mode:overlay;
+  mix-blend-mode:screen;
   animation:hero-light-sweep 18s ease-in-out infinite;
 }
 @keyframes hero-light-sweep{
