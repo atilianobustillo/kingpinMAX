@@ -137,19 +137,21 @@ header{position:sticky;top:0;z-index:40;background:var(--ink);border-bottom:2px 
 }
 .hero-photo::after{
   content:"";position:absolute;inset:0;
-  background-image:linear-gradient(115deg,
-    transparent 0%, transparent 26%,
-    rgba(255,255,255,0.06) 38%,
-    rgba(255,255,255,0.30) 50%,
-    rgba(255,255,255,0.06) 62%,
-    transparent 74%, transparent 100%);
-  background-size:320% 320%;
+  background-image:radial-gradient(circle,
+    rgba(255,255,255,0.4) 0%,
+    rgba(255,255,255,0.16) 34%,
+    rgba(255,255,255,0.04) 58%,
+    transparent 72%);
+  background-size:44vmin 44vmin;
+  background-repeat:no-repeat;
   mix-blend-mode:screen;
-  animation:hero-light-sweep 18s ease-in-out infinite;
+  animation:hero-light-orbit 22s ease-in-out infinite;
 }
-@keyframes hero-light-sweep{
-  0%,100%{background-position:0% 50%;}
-  50%{background-position:100% 50%;}
+@keyframes hero-light-orbit{
+  0%,100%{background-position:-8% 20%;}
+  25%{background-position:58% -18%;}
+  50%{background-position:112% 28%;}
+  75%{background-position:42% 105%;}
 }
 
 /* ---------- Hero ---------- */
